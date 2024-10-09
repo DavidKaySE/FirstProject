@@ -186,7 +186,14 @@ const Gallery: React.FC = () => {
           onLoadSuccess={onDocumentLoadSuccess}
         >
           <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-            <Page pageNumber={1} width={100} height={100} />
+            <Page 
+              pageNumber={1} 
+              width={100} 
+              height={100} 
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              scale={5}
+            />
           </div>
         </Document>
       );
