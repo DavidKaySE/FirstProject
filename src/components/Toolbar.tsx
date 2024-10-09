@@ -487,13 +487,23 @@ const Toolbar: React.FC<ToolbarProps> = ({
             </Portal>
           </Tooltip>
         </div>
-        {selectedTool === 'setScale' && !isDropdownOpen && (
+        {selectedTool === 'setScale' && !isDropdownOpen && scaleType === 'distance' && (
           <Alert
             className="absolute top-full left-0 mt-2 w-96 bg-black/80 text-white shadow-lg"
           >
             <Rocket className="h-4 w-4 stroke-white" />
             <AlertDescription>
-              {en.setScaleInstructions}
+              {en.setScaleDistanceInstructions}
+            </AlertDescription>
+          </Alert>
+        )}
+        {selectedTool === 'setScale' && !isDropdownOpen && scaleType === 'area' && (
+          <Alert
+            className="absolute top-full left-0 mt-2 w-96 bg-black/80 text-white shadow-lg"
+          >
+            <Rocket className="h-4 w-4 stroke-white" />
+            <AlertDescription>
+              {en.setScaleAreaInstructions}
             </AlertDescription>
           </Alert>
         )}
