@@ -65,7 +65,7 @@ const initialState: CanvasState = {
   mousePosition: { x: 0, y: 0 },
   showAllMeasurements: false,
   pixelsPerUnit: 100,
-  currentUnit: 'cm',
+  currentUnit: 'px',
   scale: 1,
   isDragging: false,
   lastStableState: null,
