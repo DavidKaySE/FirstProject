@@ -56,7 +56,7 @@ const initialState: CanvasState = {
   history: [{
     measurements: [],
     scale: 1,
-    pixelsPerUnit: 100,
+    pixelsPerUnit: 1,
     currentUnit: 'px',
   }],
   historyIndex: 0,
@@ -64,7 +64,7 @@ const initialState: CanvasState = {
   backgroundScale: 1,
   mousePosition: { x: 0, y: 0 },
   showAllMeasurements: false,
-  pixelsPerUnit: 100,
+  pixelsPerUnit: 1,
   currentUnit: 'px',
   scale: 1,
   isDragging: false,
