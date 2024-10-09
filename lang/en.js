@@ -1,0 +1,23 @@
+export const en = {
+    myLibrary: "My Library",
+    dashboard: "Dashboard",
+    login: "Login",
+    register: "Register",
+    logout: "Logout",
+    canvas: "Canvas",
+    drawLine: "Draw Line",
+    drawArea: "Draw Area",
+    close: "Close",
+    areYouSureClose: "Are you sure you want to close?",
+    drawingLostWarning: "Your drawing will be lost if you close the canvas.",
+    cancel: "Cancel",
+    closeCanvas: "Close Canvas",
+    deleteImage: "Delete image",
+    clickOrDragToUpload: "Click or drag and drop to upload",
+    unknownError: "An unknown error occurred",
+    open: "Open",
+    delete: "Delete",
+    setScale: "Set Scale",
+    enterActualDistance: "Enter the actual distance between the two points you have chosen.",
+    enterDistance: "Enter distance"
+};
