@@ -355,10 +355,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
             <div className="w-px h-6 bg-gray-300 mx-2" />
 
             <DropdownMenu 
-              open={isDropdownOpen && selectedTool !== 'setScale'} 
+              open={isDropdownOpen} 
               onOpenChange={(open) => {
-                if (selectedTool !== 'setScale') {
-                  setIsDropdownOpen(open);
+                if (!isDropdownOpen && open) {
+                  setIsDropdownOpen(true);
+                } else if (isDropdownOpen && !open) {
+                  setIsDropdownOpen(false);
                 }
               }}
             >
