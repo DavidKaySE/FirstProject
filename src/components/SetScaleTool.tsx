@@ -314,6 +314,7 @@ const SetScaleTool: React.FC<SetScaleToolProps> = ({
         if (!open) {
           setIsSettingScale(false);
           dispatch(clearMeasurePoints());
+          dispatch(setSelectedTool('measure'));
           onClose();
         } else {
           setSelectedUnit(defaultUnit);
