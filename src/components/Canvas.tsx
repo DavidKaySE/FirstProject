@@ -70,7 +70,7 @@ const Canvas: React.FC = () => {
         limitToBounds={true}
         disabled={false}
       >
-        {({ zoomIn, zoomOut, resetTransform, zoomToElement, state }) => {
+        {({ zoomIn, zoomOut, resetTransform, zoomToElement, state }: any) => {
           useEffect(() => {
             const handleResize = () => {
               const containerWidth = containerRef.current?.clientWidth || 0;
@@ -116,6 +116,9 @@ const Canvas: React.FC = () => {
                   onClose={handleClose}
                   isCanvasJustOpened={isInitialLoad}
                   showWelcomeMessage={showWelcomeMessage}
+                  onDownload={() => {/* Implementera nedladdningsfunktion */}}
+                  currentFileName="exempel.fil"
+                  onExport={() => {/* Implementera exportfunktion */}}
                 />
               </div>
             </>
