@@ -40,7 +40,7 @@ export const en = {
     showAll: "Show all measurements",
     scale: "Scale",
     setScale: "Set Scale",
-    enterActualDistance: "Enter the actual distance between the two points you've chosen.",
+    enterActualDistance: "Enter the actual distance between the two points you placed.",
     enterDistance: "Enter distance",
     setScaleDistanceInstructions: "Place two points to define a known distance. Finish with double click or hit Enter. You will then be prompted to enter the actual length.",
     setScaleAreaInstructions: "Place at least three points to define a known area. Finish with double click or hit Enter. You will then be prompted to enter the actual area.",
