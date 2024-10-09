@@ -54,6 +54,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const currentScale = useSelector((state: RootState) => state.canvas.scale);
   const measurements = useSelector((state: RootState) => state.canvas.measurements);
   const { setError, saveMeasurements, openFile } = useFileManager();
+  const scaleType = useSelector((state: RootState) => state.canvas.scaleType);
 
   const [scale, setLocalScale] = useState(100);
   const [unit, setLocalUnit] = useState('px');
@@ -175,8 +176,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
   const handleSetScale = (type: 'distance' | 'area') => {
     dispatch(setSelectedTool('setScale'));
-    dispatch(setScaleType(type)); // Du behöver lägga till denna action i din canvasSlice
-    setIsDropdownOpen(false);  // Stäng dropdown-menyn
+    dispatch(setScaleType(type));
+    setIsDropdownOpen(false);
   };
 
   const handleDownload = () => {
