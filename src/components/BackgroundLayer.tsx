@@ -11,7 +11,7 @@ interface BackgroundLayerProps {
   isInitialLoad: boolean;
 }
 
-const BackgroundLayer: React.FC<BackgroundLayerProps> = React.memo(({ width, height, isInitialLoad }) => {
+const BackgroundLayer: React.FC<BackgroundLayerProps> = React.memo(({ width, height }) => {
   const currentFile = useSelector((state: RootState) => state.canvas.currentFile);
   const { error, setError } = useFileManager();
   const containerRef = useRef<HTMLDivElement>(null);

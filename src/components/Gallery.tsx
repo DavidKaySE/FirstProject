@@ -20,7 +20,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
-  const { uploadFile, downloadFile, deleteFile, openFile, getAllFiles, isLoading, error } = useFileManager();
+  const { uploadFile, downloadFile, deleteFile, openFile, getAllFiles } = useFileManager();
   const [images, setImages] = useState<string[]>([]);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -40,7 +40,7 @@ const Gallery: React.FC = () => {
     cMapPacked: true,
   }), []);
 
-  const onDocumentLoadSuccess = useCallback(({ numPages }) => {
+  const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     console.log(`Dokument laddat, antal sidor: ${numPages}`);
   }, []);
 
@@ -48,15 +48,15 @@ const Gallery: React.FC = () => {
     return new Promise((resolve) => {
       setLoadingStates(prev => ({ ...prev, [fileName]: true }));
       setErrorStates(prev => ({ ...prev, [fileName]: false }));
-      setShowErrorStates(prev => ({ ...prev, [fileName]: false }));
+      setShowErrorStates((prev: Record<string, boolean>) => ({ ...prev, [fileName]: false }));
 
       const dataURL = localStorage.getItem(`fileData_${fileName}`);
-      const fileType = localStorage.getItem(`fileType_${fileName}`);
+      // const fileType = localStorage.getItem(`fileType_${fileName}`);
       
       console.log(`Laddar bild: ${fileName}`);
       console.log(`fileData finns: ${!!dataURL}`);
 
-      if (dataURL && fileType) {
+      if (dataURL) {
         const img = new Image();
         img.onload = () => {
           resolve(dataURL);
@@ -67,7 +67,7 @@ const Gallery: React.FC = () => {
           setErrorStates(prev => ({ ...prev, [fileName]: true }));
           setLoadingStates(prev => ({ ...prev, [fileName]: false }));
           setTimeout(() => {
-            setShowErrorStates(prev => ({ ...prev, [fileName]: true }));
+            setShowErrorStates((prev: Record<string, boolean>) => ({ ...prev, [fileName]: true }));
           }, 2000);
           resolve(null);
         };
@@ -77,7 +77,7 @@ const Gallery: React.FC = () => {
         setErrorStates(prev => ({ ...prev, [fileName]: true }));
         setLoadingStates(prev => ({ ...prev, [fileName]: false }));
         setTimeout(() => {
-          setShowErrorStates(prev => ({ ...prev, [fileName]: true }));
+          setShowErrorStates((prev: Record<string, boolean>) => ({ ...prev, [fileName]: true }));
         }, 2000);
         resolve(null);
       }
