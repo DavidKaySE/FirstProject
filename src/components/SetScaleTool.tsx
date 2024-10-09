@@ -361,7 +361,6 @@ const SetScaleTool: React.FC<SetScaleToolProps> = ({
               dispatch(setSelectedTool('measure'));
               setIsDialogOpen(false);
               setIsSettingScale(false);
-              onClose();
             }} variant="outline">{en.cancel}</Button>
           </DialogFooter>
         </DialogContent>
