@@ -49,7 +49,7 @@ export const en = {
     WelcomeTip1: "Hot tip - you can finish a measurement in 3 different ways:",
     WelcomeTip1_1: "- by double clicking when you place the last point",
     WelcomeTip1_2: "- by clicking near the first point",
-    WelcomeTip1_3: "- by hitting the ESC key",
+    WelcomeTip1_3: "- by hitting the Enter key",
     fileSaved: "File saved successfully!",
     enterActualArea: "Enter the actual area of the selected region",
     enterArea: "Enter area",

@@ -262,7 +262,7 @@ const MeasureTool: React.FC<MeasureToolProps> = React.memo(({ isInitialLoad, wid
       
       let resultText = isLine
         ? formatMeasurement(distance, currentUnit)
-        : `${area.toFixed(2)} ${formatAreaUnit(currentUnit)}`;
+        : area != null ? `${area.toFixed(2)} ${formatAreaUnit(currentUnit)}` : 'N/A';
 
       const transformedPoints = points.map(transformPoint);
       const pathData = transformedPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + (points.length > 2 ? ' Z' : '');
