@@ -158,6 +158,7 @@ const SetScaleTool: React.FC<SetScaleToolProps> = ({
       setIsSettingScale(false);
       onClose();
     } else if (e.key === 'Enter') {
+      e.preventDefault();
       if (isSettingScale && !isDialogOpen) {
         tryFinishScaleMeasurement(true);
       }

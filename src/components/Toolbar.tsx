@@ -354,7 +354,14 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
             <div className="w-px h-6 bg-gray-300 mx-2" />
 
-            <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenu 
+              open={isDropdownOpen && selectedTool !== 'setScale'} 
+              onOpenChange={(open) => {
+                if (selectedTool !== 'setScale') {
+                  setIsDropdownOpen(open);
+                }
+              }}
+            >
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex items-center h-10">
                   {scaleText} <ChevronDown className="ml-2 h-4 w-4" />
