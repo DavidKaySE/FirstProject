@@ -66,7 +66,7 @@ const initialState: CanvasState = {
   showAllMeasurements: false,
   pixelsPerUnit: 1,
   currentUnit: 'px',
-  scale: 1,
+  scale: 100,
   isDragging: false,
   lastStableState: null,
   scaleType: null,
@@ -115,8 +115,20 @@ const canvasSlice = createSlice({
       state.width = action.payload.width;
       state.height = action.payload.height;
     },
-    setCurrentFile: (state, action: PayloadAction<{ name: string; objectURL: string }>) => {
+    setCurrentFile: (state, action: PayloadAction<{ name: string; objectURL: string; metadata?: any }>) => {
       state.currentFile = action.payload;
+      if (action.payload.metadata) {
+        state.pixelsPerUnit = action.payload.metadata.pixelsPerUnit || 1;
+        state.currentUnit = action.payload.metadata.currentUnit || 'px';
+        state.scale = action.payload.metadata.scale || 100;
+        state.measurements = action.payload.metadata.measurements || [];
+      } else {
+        // Återställ till standardvärden om ingen metadata finns
+        state.pixelsPerUnit = 1;
+        state.currentUnit = 'px';
+        state.scale = 100;
+        state.measurements = [];
+      }
     },
     setBackgroundScale: (state, action: PayloadAction<number>) => {
       state.backgroundScale = action.payload;

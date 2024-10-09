@@ -55,8 +55,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const measurements = useSelector((state: RootState) => state.canvas.measurements);
   const { setError, saveMeasurements, openFile } = useFileManager();
 
-  const [scale, setLocalScale] = useState(currentScale || 100); // Fallback till 100 om currentScale är undefined
-  const [unit, setLocalUnit] = useState(currentUnit || 'm'); // Fallback till 'm' om currentUnit är undefined
+  const [scale, setLocalScale] = useState(100);
+  const [unit, setLocalUnit] = useState('px');
   const [isEditingScale, setIsEditingScale] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isWelcomeAlertVisible, setIsWelcomeAlertVisible] = useState(false);
@@ -86,12 +86,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   }, [showWelcomeMessage]);
 
   useEffect(() => {
-    if (currentScale !== undefined) {
-      setLocalScale(currentScale);
-    }
-    if (currentUnit) {
-      setLocalUnit(currentUnit);
-    }
+    setLocalScale(currentScale !== undefined ? currentScale : 100);
+    setLocalUnit(currentUnit || 'px');
   }, [currentScale, currentUnit]);
 
   useEffect(() => {
@@ -138,7 +134,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   const formatButtonText = (value: number) => {
-    return value.toFixed(2);
+    return value === 100 && unit === 'px' ? '100' : value.toFixed(2);
   };
 
   const formatInputValue = (value: number) => {
