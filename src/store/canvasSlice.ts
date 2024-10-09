@@ -57,7 +57,7 @@ const initialState: CanvasState = {
     measurements: [],
     scale: 1,
     pixelsPerUnit: 100,
-    currentUnit: 'cm',
+    currentUnit: 'px',
   }],
   historyIndex: 0,
   backgroundImage: null,
