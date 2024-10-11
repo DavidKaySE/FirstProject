@@ -297,6 +297,14 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="mb-8 p-6 bg-rose-50 rounded-lg shadow-md max-w-[50%]">
+      <h2 className="text-2xl font-bold text-rose-800 mb-4">Hi there!</h2>
+        <p className="text-rose-700 mb-4">
+        Glad to see you here! Measure.app is under development, but we couldn't resist to let you take a few quick measurements on your image or PDF. For now, there is no feature to save or export your files with measurements, but functionality for it will come at a later stage. 
+        </p>
+        <p className="text-rose-800 font-semibold">Try it out below!</p>
+      </div>
+
       <input
         type="file"
         ref={fileInputRef}
