@@ -21,7 +21,7 @@ export const conversionFactors: Record<Unit, number> = {
 };
 
 export function formatMeasurement(value: number, unit: Unit): string {
-  return `${value.toFixed(2)} ${unit}`;
+  return value?.toFixed(2) ?? '0';
 }
 
 export function formatAreaUnit(unit: Unit): string {
