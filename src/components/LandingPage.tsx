@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Ruler, Maximize, FileImage, Zap, Star, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -22,6 +22,7 @@ const stagger = {
 
 const LandingPage: React.FC = () => {
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (location.hash) {
@@ -48,22 +49,29 @@ const LandingPage: React.FC = () => {
 
   const faqs = [
     {
-      question: "How accurate are the measurements?",
-      answer: "Our app provides highly accurate measurements, typically within 1% of actual dimensions when using calibrated images or PDFs."
-    },
-    {
-      question: "Can I use the app on my mobile device?",
-      answer: "Yes, Measure.app is available on both iOS and Android devices, as well as through web browsers on desktop computers."
-    },
-    {
       question: "What file types are supported?",
-      answer: "We support a wide range of image formats (JPEG, PNG, TIFF) and PDF files. You can also import files directly from your device's camera."
+      answer: "We support a wide range of image formats (JPEG, PNG, etc.) and PDF files. Just drag an drop while in the gallery and you're good to go."
+    },
+      {
+      question: "Can i measure both distances and areas?",
+      answer: "Yes, you can measure both distances and areas. Just keep placing points and the app will calculate it for you."
     },
     {
+      question: "Can I set the scale?",
+      answer: "Yes, you can set the scale of the measurements. You can do this with the 'Set scale' tool - available for both distance and area."
+    },
+    {
+      question: "Are both imperial and metric units supported?",
+      answer: "Yes, you can choose between imperial and metric units. Just use the 'Set scale' tool - available for both distance and area. By default, you are measuring in pixels."
+    },    {
       question: "Is my data secure?",
-      answer: "Absolutely. We use industry-standard encryption to protect your data, and we never share your information with third parties."
+      answer: "The app is still in beta (and free!), so data is not being stored right now. All measurements are being calculated in your browser only. We recommend that you save your files to your computerso you can access them later."
     }
   ]
+
+  const goToGallery = () => {
+    navigate('/gallery')
+  }
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -105,11 +113,11 @@ const LandingPage: React.FC = () => {
                     Measure Anything, Anywhere
                   </h1>
                   <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl lg:text-2xl">
-                    Instantly measure distances and areas on images and PDFs with our suuper-intuitive app.
+                    Instantly measure distances and areas on images, blueprints, and PDFs with our suuper-intuitive app.
                   </p>
                 </motion.div>
                 <motion.div variants={fadeIn} className="space-x-4">
-                  <Button size="lg" className="bg-rose-500 hover:bg-rose-600 text-white shadow-lg hover:shadow-xl transition-all duration-300">Get Started</Button>
+                  <Button size="lg" className="bg-rose-500 hover:bg-rose-600 text-white shadow-lg hover:shadow-xl transition-all duration-300" onClick={goToGallery}>Get Started</Button>
                   <Button size="lg" variant="outline" className="text-rose-500 border-rose-500 hover:bg-rose-50 shadow-lg hover:shadow-xl transition-all duration-300" onClick={() => document.getElementById('features')?.scrollIntoView({behavior: 'smooth'})}>Learn More</Button>
                 </motion.div>
               </motion.div>
@@ -168,8 +176,8 @@ const LandingPage: React.FC = () => {
                 className="flex flex-col md:flex-row justify-center items-start gap-8"
               >
                 {[
-                  { step: 1, title: "Upload", description: "Upload your image or PDF file to our secure platform." },
-                  { step: 2, title: "Measure", description: "Use our intuitive tools to measure distances and areas." },
+                  { step: 1, title: "Upload", description: "Upload your image or PDF file to our app." },
+                  { step: 2, title: "Measure", description: "Use our intuitive tool to measure distances and areas." },
                   { step: 3, title: "Analyze", description: "Get instant results and export your measurements." }
                 ].map((item, index) => (
                   <motion.div key={index} variants={fadeIn} className="flex flex-col items-center text-center max-w-xs">
@@ -202,19 +210,19 @@ const LandingPage: React.FC = () => {
               >
                 {[
                   {
-                    name: "Alex Johnson",
-                    role: "Architect",
-                    comment: "Measure.app has revolutionized how I work with blueprints. It's incredibly accurate and saves me hours on each project."
+                    name: "Michaela Rossinger",
+                    role: "Garden Designer",
+                    comment: "This app has helped us significantly during our brainstorming sessions. Quick and easy to get some measurements in place."
                   },
                   {
-                    name: "Sarah Lee",
+                    name: "Sarah F.",
                     role: "Interior Designer",
-                    comment: "The ability to measure directly on photos has been a game-changer for my design process. Highly recommended!"
+                    comment: "The ability to measure directly on photos has been a game-changer for my design process. As long as I have a reference in the room it's super easy to to get a hang of the different measurements. Highly recommended!"
                   },
                   {
-                    name: "Michael Brown",
-                    role: "Construction Manager",
-                    comment: "This app has significantly reduced errors in our measurements. It's now an essential tool for our entire team."
+                  name: "Alex Johnson",
+                  role: "Architect",
+                  comment: "Measure.app is such a breeze when working with blueprints. I've been told the Pro version will have better support for snapping in pdf's, but for now it's still a super useful tool just to get some quick measurements from older scanned documents."
                   }
                 ].map((review, index) => (
                   <motion.div key={index} variants={fadeIn} className="bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300">
@@ -239,18 +247,27 @@ const LandingPage: React.FC = () => {
                 transition={{ duration: 0.8 }}
                 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12 text-rose-500"
               >
-                Simple, Transparent Pricing
+                As cheap as it gets - for a limited time!
               </motion.h2>
               <motion.div
                 initial="initial"
                 animate="animate"
                 variants={stagger}
-                className="grid gap-8 md:grid-cols-3"
+                className="grid gap-8 md:grid-cols-2 px-4 md:px-16 lg:px-32"
               >
                 {[
-                  { title: "Free", price: "$0", features: ["Basic measurements", "Up to 5 projects", "Email support"], cta: "Get Started", highlight: true },
-                  { title: "Pro", price: "Coming Soon", features: ["Advanced measurements", "Unlimited projects", "Priority support"], cta: "Join Waitlist" },
-                  { title: "Enterprise", price: "Custom", features: ["Custom solutions", "API access", "Dedicated support"], cta: "Contact Sales" }
+                  { title: "Free", 
+                    price: "- for a limited time!", 
+                    features: ["Measure distances", "Measure areas", "Set scale", "Export measurements", "Only local files"], 
+                    cta: "Get Started", 
+                    highlight: true 
+                  },
+                  { 
+                    title: "Pro", 
+                    price: "Coming Soon", 
+                    features: ["Measure distances", "Measure areas", "Set scale", "Export measurements", "Database storage", "Rename measurements", "Highlight areas", "Export in list format", "...and more!"], 
+                    cta: "Join Waitlist" 
+                  },
                 ].map((plan, index) => (
                   <motion.div
                     key={index}
@@ -303,7 +320,7 @@ const LandingPage: React.FC = () => {
                       {openFAQ === index ? <ChevronUp className="text-rose-500" /> : <ChevronDown className="text-rose-500" />}
                     </button>
                     {openFAQ === index && (
-                      <div className="mt-2 p-4 bg-rose-50 rounded-lg">
+                      <div className="mt-2 p-4 bg-white rounded-lg">
                         <p className="text-gray-600">{faq.answer}</p>
                       </div>
                     )}
@@ -325,16 +342,16 @@ const LandingPage: React.FC = () => {
                     Ready to Start Measuring?
                   </h2>
                   <p className="mx-auto max-w-[600px] text-rose-100 md:text-xl">
-                    Join thousands of professionals who trust Measure.app for accurate measurements.
+                    Join the big team of professionals who trust Measure.app for accurate measurements.
                   </p>
                 </motion.div>
                 <motion.div variants={fadeIn} className="w-full max-w-md space-y-2">
                   <form className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                     <Input className="flex-grow bg-white" placeholder="Enter your email" type="email" />
-                    <Button type="submit" className="bg-white text-rose-500 hover:bg-rose-50">Get Started</Button>
+                    <Button type="button" className="bg-white text-rose-500 hover:bg-rose-50" onClick={goToGallery}>Get Started</Button>
                   </form>
                   <p className="text-xs text-rose-100">
-                    Start your free trial. No credit card required.
+                    Try it out for free, only for a limited time! No credit card required.
                   </p>
                 </motion.div>
               </motion.div>
