@@ -53,7 +53,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const currentUnit = useSelector((state: RootState) => state.canvas.currentUnit);
   const currentScale = useSelector((state: RootState) => state.canvas.scale);
   const measurements = useSelector((state: RootState) => state.canvas.measurements);
-  const { setError, saveMeasurements, openFile } = useFileManager();
+  const { setError, saveMeasurements } = useFileManager();
   const scaleType = useSelector((state: RootState) => state.canvas.scaleType);
 
   const [scale, setLocalScale] = useState(100);
@@ -165,9 +165,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
       // Spara metadata innan vi stänger
       saveMeasurements(currentFile.name, measurements, pixelsPerUnit, currentUnit, currentScale);
     }
-    dispatch(resetHistory()); // Lägg till denna rad
+    dispatch(resetHistory());
     dispatch(closeCanvas());
-    navigate('/');
+    navigate('/gallery'); // Ändra denna rad från '/' till '/gallery'
   }, [dispatch, navigate, currentFile, measurements, pixelsPerUnit, currentUnit, currentScale, saveMeasurements]);
 
   const handleShowAllToggle = () => {

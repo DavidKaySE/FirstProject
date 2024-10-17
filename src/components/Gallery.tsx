@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { X, Upload, AlertTriangle, Download } from 'lucide-react';
+import { X, AlertTriangle, Download, Eye, Ruler, FileImage } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { en } from '../lib/lang/en';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -11,6 +12,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { useFileManager } from '../hooks/useFileManager';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Portal } from '@radix-ui/react-portal';
+import { useDropzone } from 'react-dropzone';
 
 // Sätt worker path
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -18,22 +20,33 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.8 }
+};
+
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
   const { uploadFile, downloadFile, deleteFile, openFile, getAllFiles } = useFileManager();
   const [images, setImages] = useState<string[]>([]);
-
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<string | null>(null);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [imageCache, setImageCache] = useState<Record<string, string | null>>({});
   const [errorFiles, setErrorFiles] = useState<string[]>([]);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const [errorStates, setErrorStates] = useState<Record<string, boolean>>({});
   const [showErrorStates, setShowErrorStates] = useState<Record<string, boolean>>({});
   const [delayedErrorStates, setDelayedErrorStates] = useState<Record<string, boolean>>({});
+  const [previewFile, setPreviewFile] = useState<string | null>(null);
 
   const pdfOptions = useMemo(() => ({
     cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
@@ -51,7 +64,6 @@ const Gallery: React.FC = () => {
       setShowErrorStates((prev: Record<string, boolean>) => ({ ...prev, [fileName]: false }));
 
       const dataURL = localStorage.getItem(`fileData_${fileName}`);
-      // const fileType = localStorage.getItem(`fileType_${fileName}`);
       
       console.log(`Laddar bild: ${fileName}`);
       console.log(`fileData finns: ${!!dataURL}`);
@@ -116,7 +128,7 @@ const Gallery: React.FC = () => {
       if (isError && !delayedErrorStates[fileName]) {
         timers[fileName] = setTimeout(() => {
           setDelayedErrorStates(prev => ({ ...prev, [fileName]: true }));
-        }, 2000); // 2 sekunders fördröjning
+        }, 2000);
       }
     });
 
@@ -125,16 +137,20 @@ const Gallery: React.FC = () => {
     };
   }, [errorStates, delayedErrorStates]);
 
-  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      Array.from(files).forEach(file => {
-        uploadFile(file);  // Ta bort .then() här eftersom uploadFile inte längre returnerar ett Promise
-        // Uppdatera images-listan direkt efter uppladdning
-        setImages(prev => [...prev, file.name]);
-      });
-    }
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    acceptedFiles.forEach(file => {
+      uploadFile(file);
+      setImages(prev => [...prev, file.name]);
+    });
   }, [uploadFile]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': [],
+      'application/pdf': []
+    }
+  });
 
   const handleDeleteFile = useCallback((fileName: string) => {
     setFileToDelete(fileName);
@@ -161,11 +177,10 @@ const Gallery: React.FC = () => {
       downloadFile(fileName, fileData);
     } else {
       console.error(`Ingen data hittades för filen: ${fileName}`);
-      // Här kan du lägga till en felhantering, t.ex. visa ett felmeddelande för användaren
     }
   }, [downloadFile]);
 
-  const renderFile = useCallback((dataURL: string, fileName: string ) => {
+  const renderFile = useCallback((dataURL: string, fileName: string) => {
     if (loadingStates[fileName]) {
       return <div>Laddar...</div>;
     }
@@ -207,131 +222,148 @@ const Gallery: React.FC = () => {
     const fileType = localStorage.getItem(`fileType_${fileName}`);
 
     return (
-      <Card 
-        key={`${fileName}-${index}`} 
-        className="w-full aspect-square overflow-hidden relative shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-        onClick={() => handleOpenCanvas(fileName)}
-      >
-        <CardContent className="p-0 w-full h-full relative">
-          {fileData ? (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              {renderFile(fileData, fileName)}
-            </div>
-          ) : (
-            <div className="w-full h-full bg-red-100 flex items-center justify-center">
-              <AlertTriangle className="h-12 w-12 text-red-500" />
-              <p className="text-red-500 text-center ml-2">Fel vid laddning</p>
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="absolute bottom-0 left-0 right-0 bg-white/70 backdrop-blur-sm p-2">
-          <p className="text-sm truncate flex-grow">{fileName}</p>
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="ml-2 h-8 w-8 p-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDownload(fileName);
-                  }}
-                >
-                  <Download className="h-4 w-4 text-gray-700" />
-                </Button>
-              </TooltipTrigger>
-              <Portal>
-                <TooltipContent side="top" align="center" className="z-[9999]">
-                  {en.download}
-                </TooltipContent>
-              </Portal>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="ml-2 h-8 w-8 p-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteFile(fileName);
-                  }}
-                >
-                  <X className="h-4 w-4 text-gray-700" />
-                </Button>
-              </TooltipTrigger>
-              <Portal>
-                <TooltipContent side="top" align="center" className="z-[9999]">
-                  {en.deleteFile}
-                </TooltipContent>
-              </Portal>
-            </Tooltip>
-          </TooltipProvider>
-        </CardFooter>
-      </Card>
+      <div key={`${fileName}-${index}`} className="relative">
+        <Card 
+          className="w-full aspect-square overflow-hidden cursor-pointer bg-white border border-gray-200"
+          onClick={() => handleOpenCanvas(fileName)}
+        >
+          <CardContent className="p-0 w-full h-full relative">
+            {fileData ? (
+              <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                {renderFile(fileData, fileName)}
+              </div>
+            ) : (
+              <div className="w-full h-full bg-red-100 flex items-center justify-center">
+                <AlertTriangle className="h-12 w-12 text-red-500" />
+                <p className="text-red-500 text-center ml-2">Fel vid laddning</p>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter className="absolute bottom-0 left-0 right-0 bg-white/70 backdrop-blur-sm p-2">
+            <p className="text-sm truncate flex-grow">{fileName}</p>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="ml-2 h-8 w-8 p-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewFile(fileName);
+                    }}
+                  >
+                    <Eye className="h-4 w-4 text-gray-700" />
+                  </Button>
+                </TooltipTrigger>
+                <Portal>
+                  <TooltipContent side="top" align="center" className="z-[9999]">
+                    {en.preview}
+                  </TooltipContent>
+                </Portal>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="ml-2 h-8 w-8 p-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownload(fileName);
+                    }}
+                  >
+                    <Download className="h-4 w-4 text-gray-700" />
+                  </Button>
+                </TooltipTrigger>
+                <Portal>
+                  <TooltipContent side="top" align="center" className="z-[9999]">
+                    {en.download}
+                  </TooltipContent>
+                </Portal>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="ml-2 h-8 w-8 p-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteFile(fileName);
+                    }}
+                  >
+                    <X className="h-4 w-4 text-gray-700" />
+                  </Button>
+                </TooltipTrigger>
+                <Portal>
+                  <TooltipContent side="top" align="center" className="z-[9999]">
+                    {en.deleteFile}
+                  </TooltipContent>
+                </Portal>
+              </Tooltip>
+            </TooltipProvider>
+          </CardFooter>
+        </Card>
+      </div>
     );
-  }, [handleDeleteFile, handleOpenCanvas, handleDownload, renderFile]);
-
-  const renderImage = useCallback((fileName: string) => {
-    const objectURL = localStorage.getItem(`objectURL_${fileName}`);
-    
-    if (!objectURL) {
-      console.error(`No objectURL found for file: ${fileName}`);
-      return null;
-    }
-
-    return (
-      <Card key={fileName} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
-        <CardContent className="p-4">
-          <img src={objectURL} alt={fileName} className="w-full h-40 object-cover mb-2" />
-          <p className="text-sm font-semibold">{fileName}</p>
-        </CardContent>
-        <CardFooter className="p-4 pt-0 flex justify-between">
-          <Button onClick={() => openFile(fileName)}>{en.open}</Button>
-          <Button variant="destructive" onClick={() => handleDeleteFile(fileName)}>{en.delete}</Button>
-        </CardFooter>
-      </Card>
-    );
-  }, [openFile, handleDeleteFile]);
+  }, [handleOpenCanvas, renderFile, setPreviewFile]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 p-6 bg-rose-50 rounded-lg shadow-md max-w-[50%]">
-      <h2 className="text-2xl font-bold text-rose-800 mb-4">Hi there!</h2>
-        <p className="text-rose-700 mb-4">
-        Glad to see you here! Measure.app is under development, but we couldn't resist to let you take a few quick measurements on your image or PDF. For now, there is no feature to save or export your files with measurements, but functionality for it will come at a later stage. 
-        </p>
-        <p className="text-rose-800 font-semibold">Try it out below!</p>
-      </div>
+    <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
+      <header className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-white/30 fixed w-full z-50">
+        <a className="flex items-center justify-center" href="#">
+          <Ruler className="h-6 w-6 mr-2 text-rose-500" />
+          <span className="font-bold text-rose-500">Measure.app Gallery</span>
+        </a>
+      </header>
+      <main className="flex-1 w-full pt-14">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={stagger}
+            className="space-y-8"
+          >
+            <motion.h1 variants={fadeIn} className="text-4xl font-bold tracking-tighter text-center text-rose-500">
+              File Gallery
+            </motion.h1>
+            <motion.div variants={fadeIn} className="max-w-xl mx-auto">
+              <div
+                {...getRootProps()}
+                className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors ${
+                  isDragActive ? 'border-rose-500 bg-rose-50' : 'border-gray-300 hover:border-rose-500'
+                }`}
+              >
+                <input {...getInputProps()} />
+                <FileImage className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">
+                  Drag 'n' drop some files here, or click to select files
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  (Only images and PDF files will be accepted)
+                </p>
+              </div>
+            </motion.div>
+            
+            {errorFiles.length > 0 && (
+              <motion.div variants={fadeIn} className="mt-4 p-4 bg-yellow-100 rounded-md">
+                <p className="text-yellow-700">Varning: Några filer kunde inte laddas:</p>
+                <ul className="list-disc list-inside">
+                  {errorFiles.map((file, index) => (
+                    <li key={index}>{file}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
 
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*,.pdf"
-        className="hidden"
-        multiple
-      />
-      <Button onClick={() => fileInputRef.current?.click()} className="mb-4">
-        <Upload className="mr-2 h-4 w-4" /> {en.uploadFiles}
-      </Button>
-      
-      {errorFiles.length > 0 && (
-        <div className="mt-4 p-4 bg-yellow-100 rounded-md">
-          <p className="text-yellow-700">Varning: Några filer kunde inte laddas:</p>
-          <ul className="list-disc list-inside">
-            {errorFiles.map((file, index) => (
-              <li key={index}>{file}</li>
-            ))}
-          </ul>
+            <motion.div variants={fadeIn} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {images.map((fileName, index) => renderCard(fileName, index))}
+            </motion.div>
+          </motion.div>
         </div>
-      )}
+      </main>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {images.map((fileName, index) => renderCard(fileName, index))}
-      </div>
-      
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -344,6 +376,23 @@ const Gallery: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {previewFile && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg max-w-3xl max-h-[90vh] overflow-auto">
+            <div className="flex justify-end mb-2">
+              <Button size="icon" variant="ghost" onClick={() => setPreviewFile(null)}>
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+            {renderFile(localStorage.getItem(`fileData_${previewFile}`) || '', previewFile)}
+          </div>
+        </div>
+      )}
+
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

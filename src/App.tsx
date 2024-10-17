@@ -7,9 +7,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Gallery />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="/canvas" element={<Canvas />} />
-        <Route path="/landing" element={<LandingPage />} />
       </Routes>
     </Router>
   );

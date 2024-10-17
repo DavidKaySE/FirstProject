@@ -58,73 +58,89 @@ const Canvas: React.FC = () => {
   }
 
   return (
-    <div ref={containerRef} style={{ width: '90vw', height: '90vh', position: 'absolute', top: '5vh', left: '5vw', overflow: 'hidden', zIndex: 100, boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-      <TransformWrapper
-        initialScale={1}
-        initialPositionX={0}
-        initialPositionY={0}
-        minScale={0.2}
-        maxScale={5}
-        centerOnInit={true}
-        doubleClick={{ disabled: true }}
-        limitToBounds={true}
-        disabled={false}
+    <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
+      <div 
+        ref={containerRef} 
+        style={{ 
+          width: '98vw', // Ökad från 90vw till 95vw
+          height: '95vh', // Ökad från 90vh till 95vh
+          position: 'absolute', 
+          top: '2.5vh', // Minskad från 5vh till 2.5vh
+          left: '1vw', // Minskad från 5vw till 2.5vw
+          overflow: 'hidden', 
+          zIndex: 100, 
+          boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+          backgroundColor: 'white',
+          borderRadius: '1rem', // Lägg till denna rad för att runda av hörnen
+        }}
       >
-        {({ zoomIn, zoomOut, resetTransform, zoomToElement, state }: any) => {
-          useEffect(() => {
-            const handleResize = () => {
-              const containerWidth = containerRef.current?.clientWidth || 0;
-              const containerHeight = containerRef.current?.clientHeight || 0;
-              const scale = Math.min(containerWidth / width, containerHeight / height);
-              resetTransform();
-              zoomToElement('content', scale, 0);
-            };
+        <TransformWrapper
+          initialScale={1}
+          initialPositionX={0}
+          initialPositionY={0}
+          minScale={0.2}
+          maxScale={5}
+          centerOnInit={true}
+          doubleClick={{ disabled: true }}
+          limitToBounds={true}
+          disabled={false}
+        >
+          {({ zoomIn, zoomOut, resetTransform, zoomToElement, state }: any) => {
+            useEffect(() => {
+              const handleResize = () => {
+                const containerWidth = containerRef.current?.clientWidth || 0;
+                const containerHeight = containerRef.current?.clientHeight || 0;
+                const scale = Math.min(containerWidth / width, containerHeight / height);
+                resetTransform();
+                zoomToElement('content', scale, 0);
+              };
 
-            window.addEventListener('resize', handleResize);
-            handleResize(); // Initial anpassning
-            return () => window.removeEventListener('resize', handleResize);
-          }, [width, height, resetTransform, zoomToElement, state?.scale]);
+              window.addEventListener('resize', handleResize);
+              handleResize(); // Initial anpassning
+              return () => window.removeEventListener('resize', handleResize);
+            }, [width, height, resetTransform, zoomToElement, state?.scale]);
 
-          return (
-            <>
-              <TransformComponent
-                wrapperStyle={{
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                <div id="content" style={{ position: 'relative', width: `${width}px`, height: `${height}px` }}>
-                  <BackgroundLayer
-                    width={width}
-                    height={height}
-                    canvasRef={canvasRef}
-                    isInitialLoad={isInitialLoad}
-                  />
-                  <MeasureTool 
-                    width={width}
-                    height={height}
-                    isInitialLoad={isInitialLoad} 
-                    containerRef={containerRef}
+            return (
+              <>
+                <TransformComponent
+                  wrapperStyle={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                >
+                  <div id="content" style={{ position: 'relative', width: `${width}px`, height: `${height}px` }}>
+                    <BackgroundLayer
+                      width={width}
+                      height={height}
+                      canvasRef={canvasRef}
+                      isInitialLoad={isInitialLoad}
+                    />
+                    <MeasureTool 
+                      width={width}
+                      height={height}
+                      isInitialLoad={isInitialLoad} 
+                      containerRef={containerRef}
+                    />
+                  </div>
+                </TransformComponent>
+                <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 200 }}>
+                  <Toolbar 
+                    zoomIn={zoomIn}
+                    zoomOut={zoomOut}
+                    resetTransform={resetTransform}
+                    onClose={handleClose}
+                    isCanvasJustOpened={isInitialLoad}
+                    showWelcomeMessage={showWelcomeMessage}
+                    onDownload={() => {/* Implementera nedladdningsfunktion */}}
+                    currentFileName="exempel.fil"
+                    onExport={() => {/* Implementera exportfunktion */}}
                   />
                 </div>
-              </TransformComponent>
-              <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 200 }}>
-                <Toolbar 
-                  zoomIn={zoomIn}
-                  zoomOut={zoomOut}
-                  resetTransform={resetTransform}
-                  onClose={handleClose}
-                  isCanvasJustOpened={isInitialLoad}
-                  showWelcomeMessage={showWelcomeMessage}
-                  onDownload={() => {/* Implementera nedladdningsfunktion */}}
-                  currentFileName="exempel.fil"
-                  onExport={() => {/* Implementera exportfunktion */}}
-                />
-              </div>
-            </>
-          );
-        }}
-      </TransformWrapper>
+              </>
+            );
+          }}
+        </TransformWrapper>
+      </div>
     </div>
   );
 };

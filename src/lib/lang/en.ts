@@ -56,4 +56,5 @@ export const en = {
     distance: "Distance",
     area: "Area",
     selectUnit: 'Select unit',
+    preview: 'Preview'
 };

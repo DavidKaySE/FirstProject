@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
       answer: "Yes, you can choose between imperial and metric units. Just use the 'Set scale' tool - available for both distance and area. By default, you are measuring in pixels."
     },    {
       question: "Is my data secure?",
-      answer: "The app is still in beta (and free!), so data is not being stored right now. All measurements are being calculated in your browser only. We recommend that you save your files to your computerso you can access them later."
+      answer: "The app is still in beta (and free!), so data is not being stored right now. All measurements are being calculated in your browser only. We recommend that you save your files to your computer so you can access them later."
     }
   ]
 
