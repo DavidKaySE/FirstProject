@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store/store';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { X, AlertTriangle, Download, Eye, Ruler, FileImage } from 'lucide-react';
+import { X, Upload, AlertTriangle, Download, Eye, Ruler, FileImage, File } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { en } from '../lib/lang/en';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -13,6 +15,15 @@ import { useFileManager } from '../hooks/useFileManager';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Portal } from '@radix-ui/react-portal';
 import { useDropzone } from 'react-dropzone';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog"
+import { logout } from '../store/authSlice'; // Se till att du har denna import
 
 // Sätt worker path
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -36,6 +47,9 @@ const stagger = {
 
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const session = useSelector((state: RootState) => state.auth.session);
   const { uploadFile, downloadFile, deleteFile, openFile, getAllFiles } = useFileManager();
   const [images, setImages] = useState<string[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -47,6 +61,8 @@ const Gallery: React.FC = () => {
   const [showErrorStates, setShowErrorStates] = useState<Record<string, boolean>>({});
   const [delayedErrorStates, setDelayedErrorStates] = useState<Record<string, boolean>>({});
   const [previewFile, setPreviewFile] = useState<string | null>(null);
+  const [showResetAlert, setShowResetAlert] = useState(false);
+  const [hasCheckedReset, setHasCheckedReset] = useState(false);
 
   const pdfOptions = useMemo(() => ({
     cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
@@ -309,90 +325,139 @@ const Gallery: React.FC = () => {
     );
   }, [handleOpenCanvas, renderFile, setPreviewFile]);
 
+  useEffect(() => {
+    if (!session) {
+      navigate('/auth', { replace: true });
+    }
+  }, [session, navigate]);
+
+  useEffect(() => {
+    if (session && !hasCheckedReset) {
+      const urlParams = new URLSearchParams(location.search);
+      if (urlParams.get('passwordReset') === 'true') {
+        setShowResetAlert(true);
+        navigate('/gallery', { replace: true });
+      }
+      setHasCheckedReset(true);
+    }
+  }, [session, location, navigate, hasCheckedReset]);
+
+  const handleLogout = useCallback(async () => {
+    await dispatch(logout());
+    navigate('/', { replace: true });
+  }, [dispatch, navigate]);
+
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      <header className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-white/30 fixed w-full z-50">
-        <a className="flex items-center justify-center" href="#">
-          <Ruler className="h-6 w-6 mr-2 text-rose-500" />
-          <span className="font-bold text-rose-500">Measure.app Gallery</span>
-        </a>
-      </header>
-      <main className="flex-1 w-full pt-14">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={stagger}
-            className="space-y-8"
-          >
-            <motion.h1 variants={fadeIn} className="text-4xl font-bold tracking-tighter text-center text-rose-500">
-              File Gallery
-            </motion.h1>
-            <motion.div variants={fadeIn} className="max-w-xl mx-auto">
-              <div
-                {...getRootProps()}
-                className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors ${
-                  isDragActive ? 'border-rose-500 bg-rose-50' : 'border-gray-300 hover:border-rose-500'
-                }`}
+      {session && (
+        <>
+          <header className="px-4 lg:px-6 h-14 flex items-center justify-between backdrop-blur-md bg-white/30 fixed w-full z-50">
+            <a className="flex items-center justify-center" href="#">
+              <Ruler className="h-6 w-6 mr-2 text-rose-500" />
+              <span className="font-bold text-rose-500">Measure.app Gallery</span>
+            </a>
+            <Button 
+              variant="ghost" 
+              onClick={handleLogout}
+              className="text-rose-500 hover:text-rose-700"
+            >
+              Logga ut
+            </Button>
+          </header>
+          <main className="flex-1 w-full pt-14">
+            <div className="container mx-auto px-4 py-8 max-w-7xl">
+              <motion.div
+                initial="initial"
+                animate="animate"
+                variants={stagger}
+                className="space-y-8"
               >
-                <input {...getInputProps()} />
-                <FileImage className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-500">
-                  Drag 'n' drop some files here, or click to select files
-                </p>
-                <p className="mt-1 text-xs text-gray-500">
-                  (Only images and PDF files will be accepted)
-                </p>
-              </div>
-            </motion.div>
-            
-            {errorFiles.length > 0 && (
-              <motion.div variants={fadeIn} className="mt-4 p-4 bg-yellow-100 rounded-md">
-                <p className="text-yellow-700">Varning: Några filer kunde inte laddas:</p>
-                <ul className="list-disc list-inside">
-                  {errorFiles.map((file, index) => (
-                    <li key={index}>{file}</li>
-                  ))}
-                </ul>
+                <motion.h1 variants={fadeIn} className="text-4xl font-bold tracking-tighter text-center text-rose-500">
+                  File Gallery
+                </motion.h1>
+                <motion.div variants={fadeIn} className="max-w-xl mx-auto">
+                  <div
+                    {...getRootProps()}
+                    className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors ${
+                      isDragActive ? 'border-rose-500 bg-rose-50' : 'border-gray-300 hover:border-rose-500'
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    <FileImage className="mx-auto h-12 w-12 text-gray-400" />
+                    <p className="mt-2 text-sm text-gray-500">
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      (Only images and PDF files will be accepted)
+                    </p>
+                  </div>
+                </motion.div>
+                
+                {errorFiles.length > 0 && (
+                  <motion.div variants={fadeIn} className="mt-4 p-4 bg-yellow-100 rounded-md">
+                    <p className="text-yellow-700">Varning: Några filer kunde inte laddas:</p>
+                    <ul className="list-disc list-inside">
+                      {errorFiles.map((file, index) => (
+                        <li key={index}>{file}</li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+
+                <motion.div variants={fadeIn} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {images.map((fileName, index) => renderCard(fileName, index))}
+                </motion.div>
               </motion.div>
-            )}
-
-            <motion.div variants={fadeIn} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {images.map((fileName, index) => renderCard(fileName, index))}
-            </motion.div>
-          </motion.div>
-        </div>
-      </main>
-
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{en.deleteFile}</DialogTitle>
-            <DialogDescription>{en.areYouSureDelete}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setIsDeleteDialogOpen(false)}>{en.cancel}</Button>
-            <Button onClick={confirmDeleteFile}>{en.deleteFile}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {previewFile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg max-w-3xl max-h-[90vh] overflow-auto">
-            <div className="flex justify-end mb-2">
-              <Button size="icon" variant="ghost" onClick={() => setPreviewFile(null)}>
-                <X className="h-6 w-6" />
-              </Button>
             </div>
-            {renderFile(localStorage.getItem(`fileData_${previewFile}`) || '', previewFile)}
-          </div>
-        </div>
-      )}
+          </main>
 
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
-      </footer>
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{en.deleteFile}</DialogTitle>
+                <DialogDescription>{en.areYouSureDelete}</DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button onClick={() => setIsDeleteDialogOpen(false)}>{en.cancel}</Button>
+                <Button onClick={confirmDeleteFile}>{en.deleteFile}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {previewFile && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-4 rounded-lg max-w-3xl max-h-[90vh] overflow-auto">
+                <div className="flex justify-end mb-2">
+                  <Button size="icon" variant="ghost" onClick={() => setPreviewFile(null)}>
+                    <X className="h-6 w-6" />
+                  </Button>
+                </div>
+                {renderFile(localStorage.getItem(`fileData_${previewFile}`) || '', previewFile)}
+              </div>
+            </div>
+          )}
+
+          <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+            <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
+          </footer>
+
+          <AlertDialog open={showResetAlert} onOpenChange={setShowResetAlert}>
+            <AlertDialogContent className="bg-green-100 border-green-500">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-green-700">Lösenord återställt</AlertDialogTitle>
+                <AlertDialogDescription className="text-green-600">
+                  Ditt lösenord har återställts framgångsrikt!
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <Button onClick={() => setShowResetAlert(false)} className="bg-green-500 text-white hover:bg-green-600">
+                  OK
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      )}
     </div>
   );
 };

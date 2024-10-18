@@ -20,6 +20,7 @@ const Canvas: React.FC = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
   const { downloadFile } = useFileManager();
+  const session = useSelector((state: RootState) => state.auth.session);
 
   const handleDownload = useCallback(() => {
     if (canvasRef.current && currentFile) {
@@ -53,8 +54,13 @@ const Canvas: React.FC = () => {
     };
   }, [currentFile]);
 
+  // Lägg till denna kontroll i början av komponenten
+  if (!session) {
+    return <Navigate to="/auth" replace />;
+  }
+
   if (!currentFile) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/gallery" replace />;
   }
 
   return (

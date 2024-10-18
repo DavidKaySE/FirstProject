@@ -31,3 +31,5 @@ dist-ssr
 
 # Include dist folder for gh-pages branch
 !dist
+
+indexedDB.ts

@@ -285,7 +285,10 @@ const LandingPage: React.FC = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button className={`mt-auto ${plan.highlight ? 'bg-rose-500 hover:bg-rose-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}>
+                    <Button 
+                      className={`mt-auto ${plan.highlight ? 'bg-rose-500 hover:bg-rose-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}
+                      onClick={plan.highlight ? goToGallery : undefined}
+                    >
                       {plan.cta}
                     </Button>
                   </motion.div>
@@ -362,11 +365,25 @@ const LandingPage: React.FC = () => {
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <a className="text-xs hover:underline underline-offset-4" href="#">
+          <a 
+            className="text-xs hover:underline underline-offset-4" 
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/terms-of-service');
+            }}
+          >
             Terms of Service
           </a>
-          <a className="text-xs hover:underline underline-offset-4" href="#">
-            Privacy
+          <a 
+            className="text-xs hover:underline underline-offset-4" 
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/privacy-policy');
+            }}
+          >
+            Privacy Policy
           </a>
         </nav>
       </footer>
