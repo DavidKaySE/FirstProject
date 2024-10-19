@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Ruler, Mail, ArrowLeft } from 'lucide-react'
+import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { Ruler, Mail } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSession, setUser } from '../store/authSlice'
@@ -27,7 +27,6 @@ export default function Auth() {
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const sessionExists = useSelector((state: RootState) => !!state.auth.session)
   const location = useLocation()
 
   console.log('Component rendered. Current activeTab:', activeTab)
@@ -71,12 +70,6 @@ export default function Auth() {
   useEffect(() => {
     console.log('activeTab changed:', activeTab)
   }, [activeTab])
-
-  useEffect(() => {
-    if (sessionExists) {
-      navigate('/gallery')
-    }
-  }, [sessionExists, navigate])
 
   const validatePassword = (password: string) => {
     if (password.length < 6) {

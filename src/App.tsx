@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import Gallery from './components/Gallery';
 import Canvas from './components/Canvas';
 import LandingPage from './components/LandingPage';
@@ -10,6 +10,11 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSession } from './store/authSlice';
 import { RootState } from './store/store';
+
+function ProtectedRoute() {
+  const session = useSelector((state: RootState) => state.auth.session);
+  return session ? <Outlet /> : <Navigate to="/auth" replace />;
+}
 
 function App() {
   const dispatch = useDispatch();
@@ -39,14 +44,11 @@ function App() {
           path="/auth"
           element={!session ? <Auth /> : <Navigate to="/gallery" replace />}
         />
-        <Route
-          path="/gallery"
-          element={session ? <Gallery /> : <Navigate to="/auth" replace />}
-        />
-        <Route
-          path="/canvas"
-          element={session ? <Canvas /> : <Navigate to="/auth" replace />}
-        />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/canvas" element={<Canvas />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
