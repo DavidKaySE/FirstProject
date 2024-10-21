@@ -73,7 +73,7 @@ export default function Auth() {
 
   const validatePassword = (password: string) => {
     if (password.length < 6) {
-      setPasswordError('Lösenordet måste vara minst 6 tecken långt')
+      setPasswordError('Password must be at least 6 characters long')
       return false
     }
     setPasswordError(null)
@@ -99,7 +99,7 @@ export default function Auth() {
       }
     } catch (error) {
       console.error('Error logging in:', error)
-      setError('Fel vid inloggning. Kontrollera dina uppgifter och försök igen.')
+      setError('Login error. Check your credentials and try again.')
     } finally {
       setLoading(false)
     }
@@ -148,11 +148,11 @@ export default function Auth() {
         redirectTo: `${window.location.origin}/#/auth?mode=resetPassword`,
       })
       if (error) throw error
-      alert('Kolla din e-post för återställningslänk!')
+      alert('Check your email for the reset link!')
       setActiveTab('login')
     } catch (error) {
-      console.error('Fel vid lösenordsåterställning:', error)
-      setError(error instanceof Error ? error.message : 'Ett oväntat fel uppstod vid återställning av lösenord')
+      console.error('Error resetting password:', error)
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred while resetting password')
     } finally {
       setLoading(false)
     }
@@ -186,17 +186,17 @@ export default function Auth() {
 
     try {
       if (!resetToken) {
-        throw new Error('Ingen giltig återställningstoken hittades')
+        throw new Error('No valid reset token found')
       }
       const { error } = await supabase.auth.updateUser({ 
         password: newPassword 
       })
       if (error) throw error
-      alert('Lösenord uppdaterat framgångsrikt!')
+      alert('Password updated successfully!')
       setActiveTab('login')
     } catch (error) {
-      console.error('Fel vid lösenordsåterställning:', error)
-      setError(error instanceof Error ? error.message : 'Ett oväntat fel uppstod vid återställning av lösenord')
+      console.error('Error resetting password:', error)
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred while resetting password')
     } finally {
       setLoading(false)
     }
@@ -311,17 +311,17 @@ export default function Auth() {
                   onClick={() => setActiveTab('forgotPassword')}
                   className="text-sm text-rose-600 hover:underline"
                 >
-                  Glömt lösenord?
+                  Forgot password?
                 </button>
               </div>
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Har du inget konto?{' '}
+                  Don't have an account?{' '}
                   <button
                     onClick={() => setActiveTab('register')}
                     className="text-rose-600 hover:underline"
                   >
-                    Registrera
+                    Register
                   </button>
                 </p>
               </div>
@@ -341,7 +341,7 @@ export default function Auth() {
                       autoComplete="email"
                       required
                       className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
-                      placeholder="E-postadress"
+                      placeholder="Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -421,8 +421,8 @@ export default function Auth() {
             </TabsContent>
             <TabsContent value="resetPassword">
               <div className="text-center">
-                <h2 className="mt-6 text-3xl font-bold text-gray-900">Återställ lösenord</h2>
-                <p className="mt-2 text-sm text-gray-600">Ange ditt nya lösenord</p>
+                <h2 className="mt-6 text-3xl font-bold text-gray-900">Reset Password</h2>
+                <p className="mt-2 text-sm text-gray-600">Enter your new password</p>
               </div>
               <form className="mt-8 space-y-6" onSubmit={handleResetPassword}>
                 <div className="rounded-md shadow-sm -space-y-px">
@@ -434,7 +434,7 @@ export default function Auth() {
                       autoComplete="new-password"
                       required
                       className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
-                      placeholder="Nytt lösenord"
+                      placeholder="New password"
                       value={newPassword}
                       onChange={(e) => {
                         setNewPassword(e.target.value)
@@ -453,7 +453,7 @@ export default function Auth() {
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                     disabled={loading}
                   >
-                    {loading ? 'Bearbetar...' : 'Återställ lösenord'}
+                    {loading ? 'Processing...' : 'Reset Password'}
                   </Button>
                 </div>
               </form>
