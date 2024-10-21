@@ -3,9 +3,10 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Ruler, Maximize, FileImage, Zap, Star, Check, ChevronDown, ChevronUp } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import JoinWaitlistDialog from '@/components/JoinWaitlistDialog'
+import { supabase } from '@/lib/supabase'
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -73,6 +74,25 @@ const LandingPage: React.FC = () => {
   const goToGallery = () => {
     navigate('/gallery')
   }
+
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const { error } = await supabase.auth.signInWithOtp({ email });
+    
+    if (error) {
+      console.error('Error sending magic link:', error);
+      // Visa felmeddelande för användaren här
+    } else {
+      // Visa bekräftelsemeddelande för användaren här
+    }
+    
+    setIsLoading(false);
+  };
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -277,7 +297,8 @@ const LandingPage: React.FC = () => {
                     title: "Pro", 
                     price: "Coming Soon", 
                     features: ["Measure distances", "Measure areas", "Set scale", "Export measurements", "Database storage", "Rename measurements", "Highlight areas", "Export in list format", "...and more!"], 
-                    cta: "Join Waitlist" 
+                    cta: "Join Waitlist",
+                    action: <JoinWaitlistDialog />
                   },
                 ].map((plan, index) => (
                   <motion.div
@@ -296,12 +317,14 @@ const LandingPage: React.FC = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button 
-                      className={`mt-auto ${plan.highlight ? 'bg-rose-500 hover:bg-rose-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}
-                      onClick={plan.highlight ? goToGallery : undefined}
-                    >
-                      {plan.cta}
-                    </Button>
+                    {plan.action || (
+                      <Button 
+                        className={`mt-auto ${plan.highlight ? 'bg-rose-500 hover:bg-rose-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}
+                        onClick={plan.highlight ? goToGallery : undefined}
+                      >
+                        {plan.cta}
+                      </Button>
+                    )}
                   </motion.div>
                 ))}
               </motion.div>
@@ -360,9 +383,18 @@ const LandingPage: React.FC = () => {
                   </p>
                 </motion.div>
                 <motion.div variants={fadeIn} className="w-full max-w-md space-y-2">
-                  <form className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                    <Input className="flex-grow bg-white" placeholder="Enter your email" type="email" />
-                    <JoinWaitlistDialog />
+                  <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <Input 
+                      className="flex-grow bg-white" 
+                      placeholder="Enter your email" 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <Button type="submit" disabled={isLoading} className="bg-rose-500 hover:bg-rose-600 text-white">
+                      {isLoading ? 'Sending...' : 'Get Started'}
+                    </Button>
                   </form>
                   <p className="text-xs text-rose-100">
                     Try it out for free, only for a limited time! No credit card required.
