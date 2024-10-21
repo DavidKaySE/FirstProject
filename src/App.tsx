@@ -42,7 +42,13 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route
           path="/auth"
-          element={!session ? <Auth /> : <Navigate to="/gallery" replace />}
+          element={
+            !session ? (
+              <Auth />
+            ) : (
+              <Navigate to="/gallery" replace />
+            )
+          }
         />
         <Route element={<ProtectedRoute />}>
           <Route path="/gallery" element={<Gallery />} />

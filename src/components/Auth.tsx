@@ -116,18 +116,24 @@ export default function Auth() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      console.log('Attempting to sign up user:', email)
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       })
 
       if (error) throw error
 
-      alert('Kolla din e-post för verifieringslänken!')
+      console.log('Sign up successful:', data)
+      alert('Check your email for the verification link!')
       setActiveTab('login')
     } catch (error) {
-      console.error('Error signing up:', error)
-      setError('Fel vid registrering. Försök igen.')
+      console.error('Detailed error during sign up:', error)
+      if (error instanceof Error) {
+        setError(`Sign up error: ${error.message}`)
+      } else {
+        setError('An unexpected error occurred during sign up')
+      }
     } finally {
       setLoading(false)
     }
@@ -139,7 +145,7 @@ export default function Auth() {
     setError(null)
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth?mode=resetPassword`,
+        redirectTo: `${window.location.origin}/#/auth?mode=resetPassword`,
       })
       if (error) throw error
       alert('Kolla din e-post för återställningslänk!')
