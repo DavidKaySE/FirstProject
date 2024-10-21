@@ -127,8 +127,8 @@ const LandingPage: React.FC = () => {
           <section id="features" className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
               <motion.h2
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
                 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12 text-rose-500"
               >
@@ -138,24 +138,34 @@ const LandingPage: React.FC = () => {
                 initial="initial"
                 whileInView="animate"
                 viewport={{ once: true }}
-                variants={stagger}
+                variants={{
+                  initial: {},
+                  animate: {
+                    transition: {
+                      staggerChildren: 0.2
+                    }
+                  }
+                }}
                 className="grid gap-10 sm:grid-cols-2 md:grid-cols-3"
               >
-                <motion.div variants={fadeIn} className="flex flex-col items-center space-y-3 text-center p-6 bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <Maximize className="h-12 w-12 text-rose-500" />
-                  <h3 className="text-xl font-bold text-gray-800">Precise Measurements</h3>
-                  <p className="text-gray-500">Get accurate measurements of distances and areas with ease.</p>
-                </motion.div>
-                <motion.div variants={fadeIn} className="flex flex-col items-center space-y-3 text-center p-6 bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <FileImage className="h-12 w-12 text-rose-500" />
-                  <h3 className="text-xl font-bold text-gray-800">Image & PDF Support</h3>
-                  <p className="text-gray-500">Works seamlessly with both image files and PDF documents.</p>
-                </motion.div>
-                <motion.div variants={fadeIn} className="flex flex-col items-center space-y-3 text-center p-6 bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <Zap className="h-12 w-12 text-rose-500" />
-                  <h3 className="text-xl font-bold text-gray-800">Instant Results</h3>
-                  <p className="text-gray-500">Get measurements in real-time as you interact with your files.</p>
-                </motion.div>
+                {[
+                  { icon: Maximize, title: "Precise Measurements", description: "Get accurate measurements of distances and areas with ease." },
+                  { icon: FileImage, title: "Image & PDF Support", description: "Works seamlessly with both image files and PDF documents." },
+                  { icon: Zap, title: "Instant Results", description: "Get measurements in real-time as you interact with your files." }
+                ].map((feature, index) => (
+                  <motion.div 
+                    key={index}
+                    variants={{
+                      initial: { opacity: 0, y: 20 },
+                      animate: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+                    }}
+                    className="flex flex-col items-center space-y-3 text-center p-6 bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  >
+                    <feature.icon className="h-12 w-12 text-rose-500" />
+                    <h3 className="text-xl font-bold text-gray-800">{feature.title}</h3>
+                    <p className="text-gray-500">{feature.description}</p>
+                  </motion.div>
+                ))}
               </motion.div>
             </div>
           </section>
