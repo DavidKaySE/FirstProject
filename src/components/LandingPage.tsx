@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Ruler, Maximize, FileImage, Zap, Star, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import JoinWaitlistDialog from '@/components/JoinWaitlistDialog'
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -351,7 +352,7 @@ const LandingPage: React.FC = () => {
                 <motion.div variants={fadeIn} className="w-full max-w-md space-y-2">
                   <form className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                     <Input className="flex-grow bg-white" placeholder="Enter your email" type="email" />
-                    <Button type="button" className="bg-white text-rose-500 hover:bg-rose-50" onClick={goToGallery}>Get Started</Button>
+                    <JoinWaitlistDialog />
                   </form>
                   <p className="text-xs text-rose-100">
                     Try it out for free, only for a limited time! No credit card required.
