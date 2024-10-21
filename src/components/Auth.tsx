@@ -145,7 +145,7 @@ export default function Auth() {
     setError(null)
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/#/auth?mode=resetPassword`,
+        redirectTo: `${window.location.origin}/Measure.app/#/auth?mode=resetPassword`,
       })
       if (error) throw error
       alert('Check your email for the reset link!')
