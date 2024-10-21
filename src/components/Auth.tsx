@@ -32,27 +32,31 @@ export default function Auth() {
   console.log('Component rendered. Current activeTab:', activeTab)
 
   const parseQueryParams = () => {
-    const searchParams = new URLSearchParams(location.search)
+    const [path, params] = location.hash.split('#')
+    const searchParams = new URLSearchParams(location.search + '&' + params)
     const mode = searchParams.get('mode')
-    const token = searchParams.get('access_token')
-    console.log('Parsed query params:', { mode, token })
-    return { mode, token }
+    const access_token = searchParams.get('access_token')
+    console.log('Parsed query params:', { mode, access_token })
+    return { mode, access_token }
   }
 
   useEffect(() => {
-    console.log('useEffect triggered. Location search:', location.search)
-    const { mode, token } = parseQueryParams()
+    console.log('useEffect triggered. Location:', location)
+    const { mode, access_token } = parseQueryParams()
 
     console.log('Setting activeTab based on mode:', mode)
     if (mode === 'resetPassword') {
       setActiveTab('resetPassword')
-      if (token) {
-        setResetToken(token)
+      if (access_token) {
+        console.log('Access token found:', access_token)
+        setResetToken(access_token)
+      } else {
+        console.log('No access token found in URL')
       }
     } else {
       setActiveTab('login')
     }
-  }, [location.search])
+  }, [location])
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
@@ -192,11 +196,11 @@ export default function Auth() {
         password: newPassword 
       })
       if (error) throw error
-      alert('Password updated successfully!')
+      alert('Lösenord uppdaterat framgångsrikt!')
       setActiveTab('login')
     } catch (error) {
-      console.error('Error resetting password:', error)
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred while resetting password')
+      console.error('Fel vid lösenordsåterställning:', error)
+      setError(error instanceof Error ? error.message : 'Ett oväntat fel uppstod vid återställning av lösenord')
     } finally {
       setLoading(false)
     }
