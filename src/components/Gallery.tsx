@@ -23,9 +23,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog"
-import { logout } from '../store/authSlice'; // Se till att du har denna import
+import { logout } from '../store/authSlice';
 
-// Sätt worker path
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url,
@@ -70,7 +69,7 @@ const Gallery: React.FC = () => {
   }), []);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
-    console.log(`Dokument laddat, antal sidor: ${numPages}`);
+    console.log(`Document loaded, number of pages: ${numPages}`);
   }, []);
 
   const loadImage = useCallback((fileName: string): Promise<string | null> => {
@@ -81,8 +80,8 @@ const Gallery: React.FC = () => {
 
       const dataURL = localStorage.getItem(`fileData_${fileName}`);
       
-      console.log(`Laddar bild: ${fileName}`);
-      console.log(`fileData finns: ${!!dataURL}`);
+      console.log(`Loading image: ${fileName}`);
+      console.log(`fileData exists: ${!!dataURL}`);
 
       if (dataURL) {
         const img = new Image();
@@ -91,7 +90,7 @@ const Gallery: React.FC = () => {
           setLoadingStates(prev => ({ ...prev, [fileName]: false }));
         };
         img.onerror = () => {
-          console.error(`Kunde inte ladda bild: ${fileName}`);
+          console.error(`Could not load image: ${fileName}`);
           setErrorStates(prev => ({ ...prev, [fileName]: true }));
           setLoadingStates(prev => ({ ...prev, [fileName]: false }));
           setTimeout(() => {
@@ -101,7 +100,7 @@ const Gallery: React.FC = () => {
         };
         img.src = dataURL;
       } else {
-        console.error(`Ingen fildata hittades för: ${fileName}`);
+        console.error(`No file data found for: ${fileName}`);
         setErrorStates(prev => ({ ...prev, [fileName]: true }));
         setLoadingStates(prev => ({ ...prev, [fileName]: false }));
         setTimeout(() => {
@@ -192,7 +191,7 @@ const Gallery: React.FC = () => {
     if (fileData) {
       downloadFile(fileName, fileData);
     } else {
-      console.error(`Ingen data hittades för filen: ${fileName}`);
+      console.error(`No data found for the file: ${fileName}`);
     }
   }, [downloadFile]);
 
@@ -251,7 +250,7 @@ const Gallery: React.FC = () => {
             ) : (
               <div className="w-full h-full bg-red-100 flex items-center justify-center">
                 <AlertTriangle className="h-12 w-12 text-red-500" />
-                <p className="text-red-500 text-center ml-2">Fel vid laddning</p>
+                <p className="text-red-500 text-center ml-2">Error loading file</p>
               </div>
             )}
           </CardContent>
@@ -361,7 +360,7 @@ const Gallery: React.FC = () => {
               onClick={handleLogout}
               className="text-rose-500 hover:text-rose-700"
             >
-              Logga ut
+              Log out
             </Button>
           </header>
           <main className="flex-1 w-full pt-14">
@@ -385,7 +384,7 @@ const Gallery: React.FC = () => {
                     <input {...getInputProps()} />
                     <FileImage className="mx-auto h-12 w-12 text-gray-400" />
                     <p className="mt-2 text-sm text-gray-500">
-                      Drag 'n' drop some files here, or click to select files
+                      Drag and drop some files here, or click to select files
                     </p>
                     <p className="mt-1 text-xs text-gray-500">
                       (Only images and PDF files will be accepted)
@@ -395,7 +394,7 @@ const Gallery: React.FC = () => {
                 
                 {errorFiles.length > 0 && (
                   <motion.div variants={fadeIn} className="mt-4 p-4 bg-yellow-100 rounded-md">
-                    <p className="text-yellow-700">Varning: Några filer kunde inte laddas:</p>
+                    <p className="text-yellow-700">Warning: Some files could not be loaded:</p>
                     <ul className="list-disc list-inside">
                       {errorFiles.map((file, index) => (
                         <li key={index}>{file}</li>
@@ -440,22 +439,6 @@ const Gallery: React.FC = () => {
           <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
             <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
           </footer>
-
-          <AlertDialog open={showResetAlert} onOpenChange={setShowResetAlert}>
-            <AlertDialogContent className="bg-green-100 border-green-500">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-green-700">Lösenord återställt</AlertDialogTitle>
-                <AlertDialogDescription className="text-green-600">
-                  Ditt lösenord har återställts framgångsrikt!
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <Button onClick={() => setShowResetAlert(false)} className="bg-green-500 text-white hover:bg-green-600">
-                  OK
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
         </>
       )}
     </div>

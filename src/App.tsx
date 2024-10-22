@@ -49,10 +49,7 @@ function App() {
               <Navigate to="/gallery" replace />
             )
           }
-        >
-          {/* Lägg till denna subroute för att hantera lösenordsåterställning */}
-          <Route path="?mode=resetPassword" element={<Auth />} />
-        </Route>
+        />
         <Route path="/auth/callback" element={<Auth />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/gallery" element={<Gallery />} />

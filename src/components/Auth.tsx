@@ -81,7 +81,7 @@ export default function AuthComponent() {
           className="w-full max-w-md space-y-8 p-8 bg-white rounded-xl shadow-2xl"
         >
           <CustomAuthUI
-            redirectTo={`${window.location.origin}/#/auth/callback`}
+            redirectTo={`${window.location.origin}/Measure.app/#/auth/callback`}
             onAuthComplete={handleSignInComplete}
           />
         </motion.div>
