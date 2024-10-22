@@ -39,8 +39,13 @@ export default function AuthComponent() {
       const hashParams = new URLSearchParams(window.location.hash.slice(1))
       const accessToken = hashParams.get('access_token')
       const refreshToken = hashParams.get('refresh_token')
+      const type = hashParams.get('type')
 
-      if (accessToken && refreshToken) {
+      if (type === 'recovery') {
+        // Detta är en lösenordsåterställning
+        navigate('/update-password')
+      } else if (accessToken && refreshToken) {
+        // Normal inloggning/registrering
         supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
@@ -53,7 +58,7 @@ export default function AuthComponent() {
         })
       }
     }
-  }, [location, handleAuthStateChange])
+  }, [location, handleAuthStateChange, navigate])
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">

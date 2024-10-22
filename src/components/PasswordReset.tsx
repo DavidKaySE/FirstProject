@@ -12,7 +12,7 @@ export default function PasswordReset() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/Measure.app/#/update-password`,
+      redirectTo: `${window.location.origin}/#/update-password`,
     })
 
     if (error) {
@@ -53,4 +53,3 @@ export default function PasswordReset() {
     </div>
   )
 }
-

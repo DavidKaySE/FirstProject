@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import { useNavigate } from 'react-router-dom'
 
 export default function UpdatePassword() {
+  console.log('UpdatePassword component rendered')
   const [newPassword, setNewPassword] = useState('')
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
@@ -58,4 +59,3 @@ export default function UpdatePassword() {
     </div>
   )
 }
-
