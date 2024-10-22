@@ -15,15 +15,8 @@ import { useFileManager } from '../hooks/useFileManager';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Portal } from '@radix-ui/react-portal';
 import { useDropzone } from 'react-dropzone';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "./ui/alert-dialog"
 import { logout } from '../store/authSlice';
+import { supabase } from '../lib/supabase';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -342,8 +335,13 @@ const Gallery: React.FC = () => {
   }, [session, location, navigate, hasCheckedReset]);
 
   const handleLogout = useCallback(async () => {
-    await dispatch(logout());
-    navigate('/', { replace: true });
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      dispatch(logout()); // Uppdatera Redux state
+      navigate('/', { replace: true });
+    }
   }, [dispatch, navigate]);
 
   return (

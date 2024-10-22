@@ -77,21 +77,27 @@ const LandingPage: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [_message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    
-    if (error) {
-      console.error('Error sending magic link:', error);
-      // Visa felmeddelande för användaren här
-    } else {
-      // Visa bekräftelsemeddelande för användaren här
-    }
-    
+    setMessage('');
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
     setIsLoading(false);
+
+    if (error) {
+      setMessage('An error occurred. Please try again later.');
+    } else {
+      setMessage('Check your email for the login link!');
+    }
   };
 
   return (

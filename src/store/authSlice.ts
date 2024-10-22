@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Session, User } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 
 interface AuthState {
   session: Session | null;
@@ -10,6 +11,15 @@ const initialState: AuthState = {
   session: null,
   user: null,
 };
+
+export const logoutThunk = createAsyncThunk('auth/logoutThunk', async (_, { dispatch }) => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw error;
+  }
+  dispatch(setSession(null));
+  dispatch(setUser(null));
+});
 
 const authSlice = createSlice({
   name: 'auth',
@@ -29,7 +39,7 @@ const authSlice = createSlice({
   },
 });
 
-// Exportera action creator
+// Exportera action creators
 export const { setSession, setUser, logout } = authSlice.actions;
 
 // Exportera reducer
