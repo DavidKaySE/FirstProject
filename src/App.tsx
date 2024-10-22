@@ -10,6 +10,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSession } from './store/authSlice';
 import { RootState } from './store/store';
+import PasswordReset from './components/PasswordReset';
+import UpdatePassword from './components/UpdatePassword';
 
 function ProtectedRoute() {
   const session = useSelector((state: RootState) => state.auth.session);
@@ -55,6 +57,8 @@ function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/canvas" element={<Canvas />} />
         </Route>
+        <Route path="/reset-password" element={<PasswordReset />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

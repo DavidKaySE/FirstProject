@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../lib/supabase'
@@ -6,25 +6,9 @@ import { Input } from './ui/input'
 
 interface CustomAuthUIProps {
   redirectTo: string
-  onAuthComplete?: (session: any) => void
 }
 
-const CustomAuthUI: React.FC<CustomAuthUIProps> = ({
-  redirectTo,
-  onAuthComplete
-}) => {
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        onAuthComplete && onAuthComplete(session)
-      }
-    })
-
-    return () => {
-      authListener.subscription.unsubscribe()
-    }
-  }, [onAuthComplete])
-
+const CustomAuthUI: React.FC<CustomAuthUIProps> = ({ redirectTo }) => {
   return (
     <Auth
       supabaseClient={supabase}

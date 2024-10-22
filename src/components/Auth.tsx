@@ -18,52 +18,42 @@ export default function AuthComponent() {
   const dispatch = useDispatch()
   const location = useLocation()
 
-  const handleAuthCallback = useCallback(() => {
-    const hashParams = new URLSearchParams(window.location.hash.slice(1));
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
-
-    if (accessToken && refreshToken) {
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ data, error }) => {
-        if (error) {
-          console.error('Error setting session:', error);
-        } else if (data.session) {
-          dispatch(setSession(data.session));
-          dispatch(setUser(data.session.user ?? null));
-          navigate('/gallery');
-        }
-      });
-    }
-  }, [dispatch, navigate]);
-
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        dispatch(setSession(session))
-        dispatch(setUser(session?.user ?? null))
-        navigate('/gallery')
-      }
-    })
-
-    return () => {
-      authListener.subscription.unsubscribe()
+  const handleAuthStateChange = useCallback((event: string, session: any) => {
+    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      dispatch(setSession(session))
+      dispatch(setUser(session?.user ?? null))
+      navigate('/gallery')
     }
   }, [dispatch, navigate])
 
   useEffect(() => {
-    if (location.pathname === '/auth/callback') {
-      handleAuthCallback();
-    }
-  }, [location, handleAuthCallback]);
+    const { data: authListener } = supabase.auth.onAuthStateChange(handleAuthStateChange)
 
-  const handleSignInComplete = (response: any) => {
-    dispatch(setSession(response.session))
-    dispatch(setUser(response.session?.user))
-    navigate('/gallery')
-  }
+    return () => {
+      authListener.subscription.unsubscribe()
+    }
+  }, [handleAuthStateChange])
+
+  useEffect(() => {
+    if (location.pathname === '/auth/callback') {
+      const hashParams = new URLSearchParams(window.location.hash.slice(1))
+      const accessToken = hashParams.get('access_token')
+      const refreshToken = hashParams.get('refresh_token')
+
+      if (accessToken && refreshToken) {
+        supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        }).then(({ data, error }) => {
+          if (error) {
+            console.error('Error setting session:', error)
+          } else if (data.session) {
+            handleAuthStateChange('SIGNED_IN', data.session)
+          }
+        })
+      }
+    }
+  }, [location, handleAuthStateChange])
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -82,7 +72,6 @@ export default function AuthComponent() {
         >
           <CustomAuthUI
             redirectTo={`${window.location.origin}/Measure.app/#/auth/callback`}
-            onAuthComplete={handleSignInComplete}
           />
         </motion.div>
       </main>
