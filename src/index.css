@@ -94,3 +94,24 @@ button:focus:not(:focus-visible) {
     background-color: #f9f9f9;
   }
 }
+
+.supabase-ui-auth button:hover {
+  background-color: rgb(225 29 72) !important; /* rose-600 */
+}
+
+.supabase-auth-ui_ui-button {
+  background-color: rgb(244 63 94) !important; /* rose-500 */
+}
+
+.supabase-auth-ui_ui-button:hover:not(.supabase-auth-ui_ui-button-social-google) {
+  background-color: rgb(225 29 72) !important; /* rose-600 */
+}
+
+.supabase-auth-ui_ui-button-social-google {
+  background-color: white !important;
+  color: #757575 !important;
+}
+
+.supabase-auth-ui_ui-button-social-google:hover {
+  background-color: #f8f8f8 !important;
+}
