@@ -355,7 +355,7 @@ const MeasureTool: React.FC<MeasureToolProps> = React.memo(({ isInitialLoad, wid
                   onClick={(e) => handleDeleteMeasurement(index, e)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <circle r="6" fill="white" stroke="rgba(59, 130, 246, 1)" strokeWidth="0.5" />
+                  <circle r="5" fill="white" stroke="rgba(59, 130, 246, 1)" strokeWidth="0.5" />
                   <path
                     d="M-2,-2 L2,2 M2,-2 L-2,2"
                     stroke="rgba(59, 130, 246, 1)"
@@ -372,7 +372,7 @@ const MeasureTool: React.FC<MeasureToolProps> = React.memo(({ isInitialLoad, wid
               cx={point.x}
               cy={point.y}
               r="5"
-              fill={shouldShowDetails ? "rgba(59, 130, 246, 1)" : "none"}
+              fill={shouldShowDetails ? "rgba(59, 130, 246, 0.5)" : "none"}
               stroke="rgba(59, 130, 246, 0.8)"
               strokeWidth="1"
               style={{ cursor: shouldShowDetails ? 'move' : 'pointer' }}
