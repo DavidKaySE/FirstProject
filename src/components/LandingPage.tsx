@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [_message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -402,6 +402,15 @@ const LandingPage: React.FC = () => {
                       {isLoading ? 'Sending...' : 'Get Started'}
                     </Button>
                   </form>
+                  {message && (
+                    <p className={`mt-2 text-sm text-white p-2 rounded ${
+                      message === 'Check your email for the login link!' 
+                        ? 'bg-green-600' 
+                        : 'bg-rose-600'
+                    }`}>
+                      {message}
+                    </p>
+                  )}
                   <p className="text-xs text-rose-100">
                     Try it out for free, only for a limited time! No credit card required.
                   </p>

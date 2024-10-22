@@ -6,10 +6,9 @@ export async function joinWaitlist(firstName: string, lastName: string, email: s
   }
 
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('waitlist')
       .insert([{ first_name: firstName, last_name: lastName, email: email }])
-      .select()
 
     if (error) {
       if (error.code === '23505') { // Unikt constraint-fel
@@ -19,7 +18,7 @@ export async function joinWaitlist(firstName: string, lastName: string, email: s
       throw error;
     }
 
-    console.log('Waitlist entry added:', data)
+    console.log('Waitlist joined successfully')
     return { message: 'Successfully registered' }
   } catch (error) {
     console.error('Error adding to waitlist:', error)

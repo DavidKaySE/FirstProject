@@ -39,39 +39,55 @@ const JoinWaitlistDialog: React.FC = () => {
       <DialogTrigger asChild>
         <Button>Join Waitlist</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Join the waitlist for the Pro version</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-2xl font-bold text-rose-500 mb-2">Join the waitlist for the Pro version</DialogTitle>
+          <DialogDescription className="text-gray-600 mb-6">
             Enter your details to be notified when the Pro version launches.
           </DialogDescription>
         </DialogHeader>
         {isSuccess ? (
-          <p className="text-green-600">Thank you for registering! We'll be in touch soon.</p>
+          <p className="text-green-600 text-center py-4">Thank you for registering! We'll be in touch soon.</p>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
-            <Input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-            <Input
-              type="email"
-              placeholder="Your email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Button type="submit" disabled={isSubmitting}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="firstName" className="text-sm font-medium text-gray-700">First Name</label>
+              <Input
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="lastName" className="text-sm font-medium text-gray-700">Last Name</label>
+              <Input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address</label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 bg-rose-500 hover:bg-rose-600"
+            >
               {isSubmitting ? 'Registering...' : 'Register'}
             </Button>
           </form>

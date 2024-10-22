@@ -29,15 +29,15 @@ jobs:
         run: npm ci
       - name: Build
         env:
-          REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
-          REACT_APP_PUBLIC_POSTHOG_HOST: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}
+          VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
+          VITE_POSTHOG_HOST: ${{ secrets.VITE_POSTHOG_HOST }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./dist  # Ändra detta om din byggmapp inte är 'dist'
+          path: ./dist
 
   deploy:
     environment:

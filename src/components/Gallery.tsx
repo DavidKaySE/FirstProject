@@ -344,6 +344,17 @@ const Gallery: React.FC = () => {
     }
   }, [dispatch, navigate]);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login');
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
+
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
       {session && (
