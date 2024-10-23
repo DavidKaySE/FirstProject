@@ -3,10 +3,11 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Ruler, Maximize, FileImage, Zap, Star, Check, ChevronDown, ChevronUp } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import JoinWaitlistDialog from '@/components/JoinWaitlistDialog'
 import { supabase } from '@/lib/supabase'
+import { useInView } from 'framer-motion'
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -99,6 +100,9 @@ const LandingPage: React.FC = () => {
       setMessage('Check your email for the login link!');
     }
   };
+
+  const videoRef = useRef(null)
+  const isInView = useInView(videoRef, { once: true })
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -201,6 +205,7 @@ const LandingPage: React.FC = () => {
           <section className="w-full py-12">
             <div className="container px-4 md:px-6">
               <motion.div 
+                ref={videoRef}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
@@ -208,13 +213,17 @@ const LandingPage: React.FC = () => {
                 style={{ aspectRatio: '2546/1778' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 pointer-events-none" />
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/N4ZEN-6f6Jg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&showinfo=0&fs=0&iv_load_policy=3&disablekb=1"
-                  title="Measure.app Demo"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                {isInView && (
+                  <iframe
+                    className="w-full h-full"
+                    src="https://www.youtube-nocookie.com/embed/N4ZEN-6f6Jg?autoplay=1&mute=1&enablejsapi=1"
+                    title="Measure.app Demo"
+                    frameBorder="0"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
               </motion.div>
             </div>
           </section>
