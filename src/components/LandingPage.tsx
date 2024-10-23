@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import JoinWaitlistDialog from '@/components/JoinWaitlistDialog'
 import { supabase } from '@/lib/supabase'
+import { useInView } from 'framer-motion'
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -101,8 +102,44 @@ const LandingPage: React.FC = () => {
   };
 
   const videoRef = useRef(null)
+  const isInView = useInView(videoRef, { once: true })
 
   const [playVideo, setPlayVideo] = useState(false)
+
+  // Lägg till denna funktion
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== "https://www.youtube-nocookie.com") return;
+      
+      try {
+        const data = JSON.parse(event.data);
+        
+        switch (data.event) {
+          case "onReady":
+            if (isInView) {
+              const iframe = document.querySelector<HTMLIFrameElement>('iframe');
+              iframe?.contentWindow?.postMessage(JSON.stringify({
+                event: "command",
+                func: "playVideo",
+                args: []
+              }), "https://www.youtube-nocookie.com");
+            }
+            break;
+          
+          case "onStateChange":
+            break;
+            
+          default:
+            break;
+        }
+      } catch (e) {
+        console.debug("Non-JSON message received");
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [isInView]);
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -209,31 +246,16 @@ const LandingPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="relative w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl cursor-pointer"
+                className="relative w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl"
                 style={{ aspectRatio: '2546/1778' }}
-                onClick={() => setPlayVideo(true)}
               >
-                {!playVideo ? (
-                  <>
-                    <img 
-                      src="https://img.youtube.com/vi/N4ZEN-6f6Jg/maxresdefault.jpg"
-                      alt="Video thumbnail"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div className="w-20 h-20 bg-rose-500 rounded-full flex items-center justify-center">
-                        <div className="w-0 h-0 border-t-[15px] border-t-transparent border-l-[25px] border-l-white border-b-[15px] border-b-transparent ml-2" />
-                      </div>
-                    </div>
-                  </>
-                ) : (
+                {isInView && (
                   <iframe
                     className="w-full h-full"
-                    src="https://www.youtube-nocookie.com/embed/N4ZEN-6f6Jg?autoplay=1&mute=1"
+                    src={`https://www.youtube-nocookie.com/embed/N4ZEN-6f6Jg?enablejsapi=1&origin=${encodeURIComponent(window.location.protocol + '//' + window.location.host)}`}
                     title="Measure.app Demo"
                     frameBorder="0"
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 )}
