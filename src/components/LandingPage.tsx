@@ -277,7 +277,7 @@ const LandingPage: React.FC = () => {
                   {
                     name: "Sarah F.",
                     role: "Interior Designer",
-                    comment: "The ability to measure directly on photos has been a game-changer for my design process. As long as I have a reference in the room it's super easy to to get a hang of the different measurements. Highly recommended!"
+                    comment: "The ability to measure directly on photos has been a game-changer for my design process. As long as I have a reference in the room it's easy to get a hang of the different measurements. 2D for now, but highly recommended!"
                   },
                   {
                     name: "Alex Johnson",
@@ -446,6 +446,12 @@ const LandingPage: React.FC = () => {
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <a 
+            className="text-xs hover:underline underline-offset-4" 
+            href="mailto:hi@measure.app?subject=Feedback on Measure.app!"
+          >
+            Feedback
+          </a>
           <a 
             className="text-xs hover:underline underline-offset-4" 
             href="#"

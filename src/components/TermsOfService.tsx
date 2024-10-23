@@ -100,7 +100,7 @@ const TermsOfService: React.FC = () => {
 
           <section>
             <h2 className="text-2xl font-semibold mb-4">14. Contact Us</h2>
-            <p>If you have any questions about these Terms, please contact us at hi at measure.app.</p>
+            <p>If you have any questions about these Terms, please contact us at hi@measure.app.</p>
           </section>
 
         </motion.div>

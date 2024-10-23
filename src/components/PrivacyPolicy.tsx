@@ -89,7 +89,7 @@ const PrivacyPolicy: React.FC = () => {
 
           <section>
             <h2 className="text-2xl font-semibold mb-4">12. Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy, please contact us at hi at measure.app.</p>
+            <p>If you have any questions about this Privacy Policy, please contact us at hi@measure.app.</p>
           </section>
 
         </motion.div>
