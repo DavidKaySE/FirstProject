@@ -179,6 +179,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
     setIsDropdownOpen(false);
   };
 
+  // Lägg till denna useEffect
+  useEffect(() => {
+    if (selectedTool !== 'setScale') {
+      setIsDropdownOpen(false);
+    }
+  }, [selectedTool]);
 
   const handleSave = () => {
     if (currentFileName) {
