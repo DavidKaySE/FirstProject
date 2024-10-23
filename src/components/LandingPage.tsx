@@ -165,11 +165,10 @@ const LandingPage: React.FC = () => {
                 whileInView="animate"
                 viewport={{ once: true }}
                 variants={{
-                  initial: {},
+                  initial: { opacity: 0 },
                   animate: {
-                    transition: {
-                      staggerChildren: 0.2
-                    }
+                    opacity: 1,
+                    transition: { staggerChildren: 0.2 }
                   }
                 }}
                 className="grid gap-10 sm:grid-cols-2 md:grid-cols-3"
@@ -183,9 +182,13 @@ const LandingPage: React.FC = () => {
                     key={index}
                     variants={{
                       initial: { opacity: 0, y: 20 },
-                      animate: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+                      animate: { 
+                        opacity: 1, 
+                        y: 0,
+                        transition: { duration: 0.5 } 
+                      }
                     }}
-                    className="flex flex-col items-center space-y-3 text-center p-6 bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                    className="flex flex-col items-center space-y-3 text-center p-6 bg-white rounded-xl shadow-xl hover:shadow-2xl"
                   >
                     <feature.icon className="h-12 w-12 text-rose-500" />
                     <h3 className="text-xl font-bold text-gray-800">{feature.title}</h3>
