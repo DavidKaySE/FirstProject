@@ -39,7 +39,7 @@ interface MeasureToolProps {
 const MeasureTool: React.FC<MeasureToolProps> = React.memo(({ isInitialLoad, width, height, containerRef }) => {
   const dispatch = useDispatch();
   const measurePoints = useSelector((state: RootState) => state.canvas.measurePoints, shallowEqual);
-  // Ta bort den oanvända variabeln
+  // Remove unused variable
   // const [isHovering, setIsHovering] = useState(false);
   const [isMeasuring, setIsMeasuring] = useState(false);
   const [isDragging, setIsDragging] = useState(false);

@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { useNavigate, Navigate, useLocation } from 'react-router-dom';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store/store';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { X, Upload, AlertTriangle, Download, Eye, Ruler, FileImage, File } from 'lucide-react';
+import { X, AlertTriangle, Download, Ruler, FileImage } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { en } from '../lib/lang/en';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -52,7 +52,6 @@ const Gallery: React.FC = () => {
   const [errorStates, setErrorStates] = useState<Record<string, boolean>>({});
   const [showErrorStates, setShowErrorStates] = useState<Record<string, boolean>>({});
   const [delayedErrorStates, setDelayedErrorStates] = useState<Record<string, boolean>>({});
-  const [previewFile, setPreviewFile] = useState<string | null>(null);
   const [showResetAlert, setShowResetAlert] = useState(false);
   const [hasCheckedReset, setHasCheckedReset] = useState(false);
 
@@ -190,14 +189,14 @@ const Gallery: React.FC = () => {
 
   const renderFile = useCallback((dataURL: string, fileName: string) => {
     if (loadingStates[fileName]) {
-      return <div>Laddar...</div>;
+      return <div>Loading...</div>;
     }
 
     if (errorStates[fileName]) {
       if (delayedErrorStates[fileName]) {
-        return <div>Fel vid laddning</div>;
+        return <div>Error loading</div>;
       } else {
-        return <div>Laddar...</div>;
+        return <div>Loading...</div>;
       }
     }
 
@@ -255,27 +254,7 @@ const Gallery: React.FC = () => {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="ml-2 h-8 w-8 p-0"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPreviewFile(fileName);
-                    }}
-                  >
-                    <Eye className="h-4 w-4 text-gray-700" />
-                  </Button>
-                </TooltipTrigger>
-                <Portal>
-                  <TooltipContent side="top" align="center" className="z-[9999]">
-                    {en.preview}
-                  </TooltipContent>
-                </Portal>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="ml-2 h-8 w-8 p-0"
+                    className="ml-2 aspect-square w-8"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDownload(fileName);
@@ -295,7 +274,7 @@ const Gallery: React.FC = () => {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="ml-2 h-8 w-8 p-0"
+                    className="ml-2 aspect-square w-8"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteFile(fileName);
@@ -315,7 +294,7 @@ const Gallery: React.FC = () => {
         </Card>
       </div>
     );
-  }, [handleOpenCanvas, renderFile, setPreviewFile]);
+  }, [handleOpenCanvas, renderFile]);
 
   useEffect(() => {
     if (!session) {
@@ -339,21 +318,10 @@ const Gallery: React.FC = () => {
     if (error) {
       console.error('Error signing out:', error);
     } else {
-      dispatch(logout()); // Uppdatera Redux state
+      dispatch(logout()); // Update Redux state
       navigate('/', { replace: true });
     }
   }, [dispatch, navigate]);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/login');
-      }
-    };
-
-    checkSession();
-  }, [navigate]);
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -431,19 +399,6 @@ const Gallery: React.FC = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-
-          {previewFile && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-4 rounded-lg max-w-3xl max-h-[90vh] overflow-auto">
-                <div className="flex justify-end mb-2">
-                  <Button size="icon" variant="ghost" onClick={() => setPreviewFile(null)}>
-                    <X className="h-6 w-6" />
-                  </Button>
-                </div>
-                {renderFile(localStorage.getItem(`fileData_${previewFile}`) || '', previewFile)}
-              </div>
-            </div>
-          )}
 
           <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
             <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>

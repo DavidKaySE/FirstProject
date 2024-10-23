@@ -19,5 +19,12 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_POSTHOG_HOST': JSON.stringify(env.VITE_POSTHOG_HOST || ''),
       'import.meta.env.VITE_RESEND_API_KEY': JSON.stringify(env.VITE_RESEND_API_KEY || ''),
     },
+    build: {
+      rollupOptions: {
+        input: {
+          main: './index.html',
+        },
+      },
+    },
   }
 })

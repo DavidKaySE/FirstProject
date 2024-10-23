@@ -52,10 +52,10 @@ const LandingPage: React.FC = () => {
   const faqs = [
     {
       question: "What file types are supported?",
-      answer: "We support a wide range of image formats (JPEG, PNG, etc.) and PDF files. Just drag an drop while in the gallery and you're good to go."
+      answer: "We support a wide range of image formats (JPEG, PNG, GIF, BMP, WebP, TIFF, etc.) and PDF files. Just drag and drop while in the gallery and you're good to go."
     },
-      {
-      question: "Can i measure both distances and areas?",
+    {
+      question: "Can I measure both distances and areas?",
       answer: "Yes, you can measure both distances and areas. Just keep placing points and the app will calculate it for you."
     },
     {
@@ -257,9 +257,9 @@ const LandingPage: React.FC = () => {
                     comment: "The ability to measure directly on photos has been a game-changer for my design process. As long as I have a reference in the room it's super easy to to get a hang of the different measurements. Highly recommended!"
                   },
                   {
-                  name: "Alex Johnson",
-                  role: "Architect",
-                  comment: "Measure.app is such a breeze when working with blueprints. I've been told the Pro version will have better support for snapping in pdf's, but for now it's still a super useful tool just to get some quick measurements from older scanned documents."
+                    name: "Alex Johnson",
+                    role: "Architect",
+                    comment: "Measure.app is such a breeze when working with older blueprints, it's super useful tool just to get some quick measurements from older scanned documents."
                   }
                 ].map((review, index) => (
                   <motion.div key={index} variants={fadeIn} className="bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300">

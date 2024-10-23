@@ -8,7 +8,6 @@ import Toolbar from './Toolbar';
 import useCanvasDimensions from '../hooks/useCanvasDimensions';
 import { closeCanvas } from '../store/canvasSlice';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { useFileManager } from '../hooks/useFileManager';
 
 const Canvas: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,15 +18,7 @@ const Canvas: React.FC = () => {
   const navigate = useNavigate();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
-  const { downloadFile } = useFileManager();
   const session = useSelector((state: RootState) => state.auth.session);
-
-  const handleDownload = useCallback(() => {
-    if (canvasRef.current && currentFile) {
-      const dataUrl = canvasRef.current.toDataURL('image/png');
-      downloadFile(currentFile.name, dataUrl);
-    }
-  }, [currentFile, downloadFile]);
 
   const handleClose = useCallback(() => {
     dispatch(closeCanvas());
@@ -35,10 +26,10 @@ const Canvas: React.FC = () => {
   }, [dispatch, navigate]);
 
   useEffect(() => {
-    // Sätt isInitialLoad till false omedelbart när komponenten har monterats
+    // Set isInitialLoad to false immediately when component has mounted
     setIsInitialLoad(false);
 
-    // Visa välkomstmeddelandet i 3.5 sekunder
+    // Show welcome message for 3.5 seconds
     const timer = setTimeout(() => {
       setShowWelcomeMessage(false);
     }, 11000);
@@ -102,7 +93,7 @@ const Canvas: React.FC = () => {
               };
 
               window.addEventListener('resize', handleResize);
-              handleResize(); // Initial anpassning
+              handleResize(); // Initial adjustment
               return () => window.removeEventListener('resize', handleResize);
             }, [width, height, resetTransform, zoomToElement, state?.scale]);
 
@@ -137,9 +128,9 @@ const Canvas: React.FC = () => {
                     onClose={handleClose}
                     isCanvasJustOpened={isInitialLoad}
                     showWelcomeMessage={showWelcomeMessage}
-                    onDownload={() => {/* Implementera nedladdningsfunktion */}}
-                    currentFileName="exempel.fil"
-                    onExport={() => {/* Implementera exportfunktion */}}
+                    onDownload={() => {/* Implement download function */}}
+                    currentFileName={currentFile?.name || null}
+                    onExport={() => {/* Implement export function */}}
                   />
                 </div>
               </>

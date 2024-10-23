@@ -37,7 +37,6 @@ interface ToolbarProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
-  onDownload,
   currentFileName,
   onExport,
   showWelcomeMessage,
@@ -162,12 +161,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
   const handleClose = useCallback(() => {
     if (currentFile) {
-      // Spara metadata innan vi stänger
+      // Save metadata before closing
       saveMeasurements(currentFile.name, measurements, pixelsPerUnit, currentUnit, currentScale);
     }
     dispatch(resetHistory());
     dispatch(closeCanvas());
-    navigate('/gallery'); // Ändra denna rad från '/' till '/gallery'
+    navigate('/gallery'); // Change this line from '/' to '/gallery'
   }, [dispatch, navigate, currentFile, measurements, pixelsPerUnit, currentUnit, currentScale, saveMeasurements]);
 
   const handleShowAllToggle = () => {
@@ -180,14 +179,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
     setIsDropdownOpen(false);
   };
 
-  const handleDownload = () => {
-    if (currentFileName) {
-      onDownload(currentFileName);
-    } else {
-      console.error('Inget filnamn tillgängligt för nedladdning');
-      // Här kan du lägga till en felhantering, t.ex. visa ett felmeddelande för användaren
-    }
-  };
 
   const handleSave = () => {
     if (currentFileName) {
@@ -195,25 +186,25 @@ const Toolbar: React.FC<ToolbarProps> = ({
       setShowSaveAlert(true);
       setTimeout(() => setShowSaveAlert(false), 3000);
     } else {
-      setError('Ingen fil är öppen för att spara');
+      setError('No file is open to save');
     }
   };
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    // Kontrollera om Ctrl (Windows) eller Cmd (Mac) är nedtryckt
+    // Check if Ctrl (Windows) or Cmd (Mac) is pressed
     const isCtrlOrCmd = event.ctrlKey || event.metaKey;
 
     if (isCtrlOrCmd && event.key === 'z') {
       event.preventDefault();
       if (event.shiftKey) {
-        // Ctrl+Shift+Z eller Cmd+Shift+Z för Redo
+        // Ctrl+Shift+Z or Cmd+Shift+Z for Redo
         handleRedo();
       } else {
-        // Ctrl+Z eller Cmd+Z för Undo
+        // Ctrl+Z or Cmd+Z for Undo
         handleUndo();
       }
     } else if (isCtrlOrCmd && event.key === 'y') {
-      // Ctrl+Y för Redo (främst för Windows)
+      // Ctrl+Y for Redo (mainly for Windows)
       event.preventDefault();
       handleRedo();
     }
@@ -549,12 +540,14 @@ const Toolbar: React.FC<ToolbarProps> = ({
         )}
         {showSaveAlert && (
           <Alert
-            className="absolute top-full left-0 mt-2 w-96 bg-green-500 text-white shadow-lg transition-opacity duration-500"
+            className="absolute top-full left-0 mt-2 w-96 bg-green-400 text-white shadow-lg transition-opacity duration-500"
           >
-            <AlertCircle className="h-4 w-4 stroke-white" />
-            <AlertDescription>
-              {en.fileSaved}
-            </AlertDescription>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 stroke-white" />
+              <AlertDescription className="mt-0">
+                {en.fileSaved}
+              </AlertDescription>
+            </div>
           </Alert>
         )}
       </div>
