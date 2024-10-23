@@ -198,6 +198,26 @@ const LandingPage: React.FC = () => {
               </motion.div>
             </div>
           </section>
+          <section className="w-full py-12">
+            <div className="container px-4 md:px-6">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="relative w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+                style={{ aspectRatio: '2546/1778' }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 pointer-events-none" />
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/N4ZEN-6f6Jg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&showinfo=0&fs=0&iv_load_policy=3&disablekb=1"
+                  title="Measure.app Demo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </motion.div>
+            </div>
+          </section>
           <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32 bg-rose-50">
             <div className="container px-4 md:px-6 w-full">
               <motion.h2
@@ -388,7 +408,7 @@ const LandingPage: React.FC = () => {
                     Ready to Start Measuring?
                   </h2>
                   <p className="mx-auto max-w-[600px] text-rose-100 md:text-xl">
-                    Join the big team of professionals who trust Measure.app for accurate measurements.
+                    Join the big pool of users who trust Measure.app for quick and accurate measurements.
                   </p>
                 </motion.div>
                 <motion.div variants={fadeIn} className="w-full max-w-md space-y-2">
