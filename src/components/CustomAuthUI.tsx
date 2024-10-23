@@ -29,7 +29,7 @@ const CustomAuthUI: React.FC<CustomAuthUIProps> = ({ redirectTo }) => {
           anchor: 'text-rose-600 hover:text-rose-700',
         },
       }}
-      providers={[]}  // Tom array för att bara visa email/lösenord
+      providers={[]}
       redirectTo={redirectTo}
       localization={{
         variables: {

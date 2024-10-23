@@ -18,10 +18,32 @@ export default function AuthComponent() {
   const dispatch = useDispatch()
   const location = useLocation()
 
-  const handleAuthStateChange = useCallback((event: string, session: any) => {
+  const handleAuthStateChange = useCallback(async (event: string, session: any) => {
     if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
       dispatch(setSession(session))
       dispatch(setUser(session?.user ?? null))
+      
+      // Kontrollera om profil finns
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', session.user.id)
+        .single()
+      
+      if (!profile) {
+        // Om ingen profil finns, skapa en med metadata
+        const { error } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: session.user.id,
+              first_name: session.user.user_metadata.first_name,
+              last_name: session.user.user_metadata.last_name
+            }
+          ])
+        if (error) console.error('Error creating profile:', error)
+      }
+      
       navigate('/gallery')
     }
   }, [dispatch, navigate])
