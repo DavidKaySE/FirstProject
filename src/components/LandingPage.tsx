@@ -7,7 +7,6 @@ import { useEffect, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import JoinWaitlistDialog from '@/components/JoinWaitlistDialog'
 import { supabase } from '@/lib/supabase'
-import { useInView } from 'framer-motion'
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -102,7 +101,8 @@ const LandingPage: React.FC = () => {
   };
 
   const videoRef = useRef(null)
-  const isInView = useInView(videoRef, { once: true })
+
+  const [playVideo, setPlayVideo] = useState(false)
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
@@ -209,14 +209,27 @@ const LandingPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="relative w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+                className="relative w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl cursor-pointer"
                 style={{ aspectRatio: '2546/1778' }}
+                onClick={() => setPlayVideo(true)}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 pointer-events-none" />
-                {isInView && (
+                {!playVideo ? (
+                  <>
+                    <img 
+                      src="https://img.youtube.com/vi/N4ZEN-6f6Jg/maxresdefault.jpg"
+                      alt="Video thumbnail"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-rose-500 rounded-full flex items-center justify-center">
+                        <div className="w-0 h-0 border-t-[15px] border-t-transparent border-l-[25px] border-l-white border-b-[15px] border-b-transparent ml-2" />
+                      </div>
+                    </div>
+                  </>
+                ) : (
                   <iframe
                     className="w-full h-full"
-                    src="https://www.youtube-nocookie.com/embed/N4ZEN-6f6Jg?autoplay=1&mute=1&enablejsapi=1"
+                    src="https://www.youtube-nocookie.com/embed/N4ZEN-6f6Jg?autoplay=1&mute=1"
                     title="Measure.app Demo"
                     frameBorder="0"
                     loading="lazy"
