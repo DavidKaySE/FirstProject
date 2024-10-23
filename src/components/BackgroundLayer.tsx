@@ -1,10 +1,8 @@
-import React, { useEffect, useCallback, useRef, useState } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { useFileManager } from '../hooks/useFileManager';
 import { Document, Page } from 'react-pdf';
-import { useTransformEffect } from 'react-zoom-pan-pinch';
-import debounce from 'lodash/debounce';
 
 interface BackgroundLayerProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -17,22 +15,6 @@ const BackgroundLayer: React.FC<BackgroundLayerProps> = React.memo(({ width, hei
   const currentFile = useSelector((state: RootState) => state.canvas.currentFile);
   const { error, setError } = useFileManager();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-  const [viewportWidth, setViewportWidth] = useState(width);
-  const [viewportHeight, setViewportHeight] = useState(height);
-
-  const updateViewport = useCallback(
-    debounce((newScale: number, newWidth: number, newHeight: number) => {
-      setScale(newScale);
-      setViewportWidth(newWidth / newScale);
-      setViewportHeight(newHeight / newScale);
-    }, 300),
-    []
-  );
-
-  useTransformEffect(({ state }) => {
-    updateViewport(state.scale, width, height);
-  });
 
   const handleImageLoad = useCallback((event: React.SyntheticEvent<HTMLImageElement>) => {
     const img = event.target as HTMLImageElement;
@@ -84,9 +66,8 @@ const BackgroundLayer: React.FC<BackgroundLayerProps> = React.memo(({ width, hei
         <Document file={currentFile.objectURL}>
           <Page 
             pageNumber={1} 
-            width={viewportWidth}
-            height={viewportHeight}
-            scale={scale}
+            width={width} 
+            height={height}
             renderTextLayer={false}
             renderAnnotationLayer={false}
           />
