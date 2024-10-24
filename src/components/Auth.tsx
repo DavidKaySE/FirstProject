@@ -84,9 +84,13 @@ export default function AuthComponent() {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      <header className="px-4 lg:px-6 h-14 flex items-center">
-        <a className="flex items-center justify-center" href="#">
-          <Ruler className="h-6 w-6 mr-2 text-rose-500" />
+      <header role="banner" className="px-4 lg:px-6 h-14 flex items-center">
+        <a 
+          className="flex items-center justify-center" 
+          href="/"
+          aria-label="Go to homepage"
+        >
+          <Ruler className="h-6 w-6 mr-2 text-rose-500" aria-hidden="true" />
           <span className="font-bold text-rose-500">Measure.app</span>
         </a>
       </header>
@@ -105,10 +109,24 @@ export default function AuthComponent() {
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500">© 2024 Measure.app. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <a className="text-xs hover:underline underline-offset-4" href="#">
+          <a 
+            className="text-xs hover:underline underline-offset-4" 
+            href="/terms-of-service"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/terms-of-service');
+            }}
+          >
             Terms of service
           </a>
-          <a className="text-xs hover:underline underline-offset-4" href="#">
+          <a 
+            className="text-xs hover:underline underline-offset-4" 
+            href="/privacy-policy"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/privacy-policy');
+            }}
+          >
             Privacy policy
           </a>
         </nav>

@@ -23,6 +23,21 @@ const stagger = {
   }
 }
 
+// Lägg till denna konstant utanför komponenten
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Measure.app",
+  "description": "Online tool for measuring distances and areas in images and PDFs",
+  "url": "https://www.measure.app",
+  "applicationCategory": "Measurement Tool",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+
 const LandingPage: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
@@ -106,9 +121,19 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      <header className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-white/30 fixed w-full z-50">
-        <a className="flex items-center justify-center" href="#">
-          <Ruler className="h-6 w-6 mr-2 text-rose-500" />
+      {/* Lägg till denna rad direkt efter öppnande div */}
+      <script 
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      
+      <header role="banner" className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-white/30 fixed w-full z-50">
+        <a 
+          className="flex items-center justify-center" 
+          href="/" 
+          aria-label="Measure.app Home"
+        >
+          <Ruler className="h-6 w-6 mr-2 text-rose-500" aria-hidden="true" />
           <span className="font-bold text-rose-500">Measure.app</span>
         </a>
         <nav className="ml-auto flex gap-4 sm:gap-6">
