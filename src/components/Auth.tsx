@@ -63,6 +63,8 @@ export default function AuthComponent() {
       const refreshToken = hashParams.get('refresh_token')
       const type = hashParams.get('type')
 
+      console.log('Auth callback:', { type, accessToken, refreshToken, hash: window.location.hash })
+
       if (type === 'recovery') {
         // Detta är en lösenordsåterställning
         navigate('/update-password')
