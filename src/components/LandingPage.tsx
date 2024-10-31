@@ -157,7 +157,7 @@ const LandingPage: React.FC = () => {
       </header>
       <main className="flex-1 w-full">
         <div className="container mx-auto px-4 max-w-7xl">
-          <section className="w-full h-[80vh] flex items-center justify-center py-12 md:py-24 lg:py-32 xl:py-48">
+          <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
             <div className="container px-4 md:px-6">
               <motion.div
                 initial="initial"
@@ -166,7 +166,7 @@ const LandingPage: React.FC = () => {
                 className="flex flex-col items-center space-y-4 text-center"
               >
                 <motion.div variants={fadeIn} className="space-y-2">
-                  <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl/none font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r pb-1 from-rose-500 to-purple-600">
+                  <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none  bg-clip-text text-transparent bg-gradient-to-r pb-1 from-rose-500 to-purple-600">
                     Measure Anything, Anywhere
                   </h1>
                   <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl lg:text-2xl">

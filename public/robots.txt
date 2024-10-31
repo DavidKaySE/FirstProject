@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.measure.app/sitemap.xml
+Sitemap: https://measure.app/sitemap.xml
 

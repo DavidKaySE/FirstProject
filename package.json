@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://measure.app/",
   "scripts": {
     "dev": "vite",
     "build": "vite build && echo 'Build completed. Files should be in:' && ls -R",
