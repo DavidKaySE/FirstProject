@@ -29,7 +29,7 @@ const CustomAuthUI: React.FC<CustomAuthUIProps> = ({ redirectTo }) => {
           anchor: 'text-rose-600 hover:text-rose-700',
         },
       }}
-      providers={[]}
+      providers={['google']}
       redirectTo={redirectTo}
       localization={{
         variables: {
