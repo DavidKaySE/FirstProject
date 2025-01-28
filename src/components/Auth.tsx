@@ -57,7 +57,7 @@ export default function AuthComponent() {
   }, [handleAuthStateChange])
 
   useEffect(() => {
-    if (location.pathname === '/auth/callback') {
+    if (location.pathname === '/#/auth/callback') {
       const hashParams = new URLSearchParams(window.location.hash.slice(1))
       const accessToken = hashParams.get('access_token')
       const refreshToken = hashParams.get('refresh_token')

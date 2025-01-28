@@ -30,7 +30,6 @@ const CustomAuthUI: React.FC<CustomAuthUIProps> = ({ redirectTo }) => {
         },
       }}
       providers={['google']}
-      redirectTo={redirectTo}
       localization={{
         variables: {
           sign_up: {
